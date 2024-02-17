@@ -54,10 +54,7 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
             <FormLabel>To</FormLabel>
             <Input placeholder="email@email.com" aria-label="Message" />
           </FormControl>
-          <FormControl>
-            <FormLabel>CC</FormLabel>
-            <Input placeholder="email@email.com" aria-label="Message" />
-          </FormControl>
+
           <Input placeholder="Subject" aria-label="Message" />
           <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Textarea
@@ -78,16 +75,16 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
                   }}
                 >
                   <div>
-                    <IconButton size="sm" variant="plain" color="neutral">
+                    <IconButton disabled size="sm" variant="plain" color="neutral">
                       <FormatColorTextRoundedIcon />
                     </IconButton>
-                    <IconButton size="sm" variant="plain" color="neutral">
+                    <IconButton disabled size="sm" variant="plain" color="neutral">
                       <AttachFileRoundedIcon />
                     </IconButton>
-                    <IconButton size="sm" variant="plain" color="neutral">
+                    <IconButton disabled size="sm" variant="plain" color="neutral">
                       <InsertPhotoRoundedIcon />
                     </IconButton>
-                    <IconButton size="sm" variant="plain" color="neutral">
+                    <IconButton disabled size="sm" variant="plain" color="neutral">
                       <FormatListBulletedRoundedIcon />
                     </IconButton>
                   </div>

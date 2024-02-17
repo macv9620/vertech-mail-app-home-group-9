@@ -37,7 +37,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <DraftsRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -45,7 +45,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <AssistantPhotoRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -53,7 +53,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <DeleteRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -64,7 +64,7 @@ export default function Navigation() {
       </ListItem>
       <ListItem nested sx={{ mt: 2 }}>
         <ListSubheader sx={{ letterSpacing: '2px', fontWeight: '800' }}>
-          Tags
+          Categories
         </ListSubheader>
         <List
           aria-labelledby="nav-list-tags"
@@ -74,7 +74,7 @@ export default function Navigation() {
           }}
         >
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <Box
                   sx={{
@@ -89,7 +89,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <Box
                   sx={{
@@ -104,7 +104,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <Box
                   sx={{
@@ -119,7 +119,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemDecorator>
                 <Box
                   sx={{

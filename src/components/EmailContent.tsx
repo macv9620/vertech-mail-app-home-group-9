@@ -1,20 +1,16 @@
 import * as React from 'react';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
-import Card from '@mui/joy/Card';
-import CardOverflow from '@mui/joy/CardOverflow';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import Snackbar from '@mui/joy/Snackbar';
-import AspectRatio from '@mui/joy/AspectRatio';
 import Divider from '@mui/joy/Divider';
 import Avatar from '@mui/joy/Avatar';
 import Tooltip from '@mui/joy/Tooltip';
 
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import ForwardToInboxRoundedIcon from '@mui/icons-material/ForwardToInboxRounded';
-import FolderIcon from '@mui/icons-material/Folder';
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
@@ -70,6 +66,7 @@ export default function EmailContent() {
           sx={{ display: 'flex', height: '32px', flexDirection: 'row', gap: 1.5 }}
         >
           <Button
+            disabled
             size="sm"
             variant="plain"
             color="neutral"
@@ -98,6 +95,7 @@ export default function EmailContent() {
             Your message has been sent.
           </Snackbar>
           <Button
+            disabled
             size="sm"
             variant="plain"
             color="neutral"
@@ -126,6 +124,7 @@ export default function EmailContent() {
             Your message has been forwarded.
           </Snackbar>
           <Button
+            disabled
             size="sm"
             variant="plain"
             color="danger"
@@ -234,56 +233,6 @@ export default function EmailContent() {
         <br />
         See you soon, Alex Jonnold
       </Typography>
-      <Divider />
-      <Typography level="title-sm" mt={2} mb={2}>
-        Attachments
-      </Typography>
-      <Box
-        sx={(theme) => ({
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
-          '& > div': {
-            boxShadow: 'none',
-            '--Card-padding': '0px',
-            '--Card-radius': theme.vars.radius.sm,
-          },
-        })}
-      >
-        <Card variant="outlined">
-          <AspectRatio ratio="1" sx={{ minWidth: 80 }}>
-            <img
-              src="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&h=80"
-              srcSet="https://images.unsplash.com/photo-1527549993586-dff825b37782?auto=format&h=160 2x"
-              alt="Yosemite National Park"
-            />
-          </AspectRatio>
-        </Card>
-        <Card variant="outlined">
-          <AspectRatio ratio="1" sx={{ minWidth: 80 }}>
-            <img
-              src="https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&h=80"
-              srcSet="https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&h=160 2x"
-              alt="Yosemite National Park"
-            />
-          </AspectRatio>
-        </Card>
-        <Card variant="outlined" orientation="horizontal">
-          <CardOverflow>
-            <AspectRatio ratio="1" sx={{ minWidth: 80 }}>
-              <div>
-                <FolderIcon />
-              </div>
-            </AspectRatio>
-          </CardOverflow>
-          <Box sx={{ py: { xs: 1, sm: 2 }, pr: 2 }}>
-            <Typography level="title-sm" color="primary">
-              videos-hike.zip
-            </Typography>
-            <Typography level="body-xs">100 MB</Typography>
-          </Box>
-        </Card>
-      </Box>
     </Sheet>
   );
 }

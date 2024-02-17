@@ -119,7 +119,7 @@ export default function App() {
               onClick={() => setOpen(true)}
               sx={{ ml: 'auto' }}
             >
-              Compose email
+              Create email
             </Button>
             <FocusTrap open={open} disableAutoFocus disableEnforceFocus>
               <WriteEmail open={open} onClose={() => setOpen(false)} />
