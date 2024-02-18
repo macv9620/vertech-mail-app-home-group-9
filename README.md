@@ -1,30 +1,16 @@
-# React + TypeScript + Vite
+# FrontEnd mail App - VerTech Fellows
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Run the application in your local
 
-Currently, two official plugins are available:
+* Clone, fork or download a repo zip.
+* Important: it is a requirement to have docker installed, so make sure you install it and that its engine is running, depending on your machine and specifications, I leave you the link for the docker installation process:
+  [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
+* In the root directory, where the `docker-compose.yml` file is, open a bash terminal and run:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+docker-compose up
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+* Wait for Docker to launch the application, when this happens you can access frontend on localhost:80 and backend on localhost:8080
+
+[localhost:80/](https://github.com/macv9620/notes-app/blob/main)
