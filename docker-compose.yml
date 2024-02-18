@@ -1,0 +1,7 @@
+services:
+  mail_ts_app:
+    container_name: mail_ts_app
+    image: mail_app:1.0.0
+    build: .
+    ports:
+      - 80:80

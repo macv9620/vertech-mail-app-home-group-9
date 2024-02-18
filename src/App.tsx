@@ -19,9 +19,12 @@ import EmailContent from './components/EmailContent';
 import WriteEmail from './components/WriteEmail';
 import Header from './components/Header';
 
-export default function App() {
+export default function App(): JSX.Element {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+
+
+
 
   return (
     <CssVarsProvider disableTransitionOnChange>
