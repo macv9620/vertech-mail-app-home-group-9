@@ -7,19 +7,88 @@ import FormLabel from '@mui/joy/FormLabel';
 import Textarea from '@mui/joy/Textarea';
 import Sheet from '@mui/joy/Sheet';
 import { IconButton, Input, Stack, Typography } from '@mui/joy';
+// import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import FormatColorTextRoundedIcon from '@mui/icons-material/FormatColorTextRounded';
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import InsertPhotoRoundedIcon from '@mui/icons-material/InsertPhotoRounded';
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
+// import Snackbar from "@mui/joy/Snackbar";
 
 interface WriteEmailProps {
   open?: boolean;
   onClose?: () => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  openSnackBar: boolean[],
+  setOpenSnackBar: React.Dispatch<React.SetStateAction<boolean[]>>
+}
+
+interface ICreateMessageBody {
+  subject: string,
+  body: string,
+  to_user: string,
+  from_user: string,
+  category_id: number
 }
 
 const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
-  function WriteEmail({ open, onClose }, ref) {
+  function WriteEmail({ open, onClose, setOpen, setOpenSnackBar, openSnackBar }, ref) {
+
+    const [toUser, setToUser] = React.useState<string>('')
+    const [subject, setSubject] = React.useState<string>('')
+    const [body, setBody] = React.useState<string>('')
+    const [isFormReady, setIsFormReady] = React.useState<boolean>(false)
+
+
+    const handleSnackbarOpen = (index: number) => {
+      const updatedOpen = [...openSnackBar];
+      updatedOpen[index] = true;
+      setOpenSnackBar(updatedOpen);
+    };
+  
+    // const handleSnackbarClose = (index: number) => {
+    //   const updatedOpen = [...openSnackBar];
+    //   updatedOpen[index] = false;
+    //   setOpenSnackBar(updatedOpen);
+    // };
+
+    const updateToUserHandler: React.ChangeEventHandler<HTMLInputElement> = (e): void => {
+      setToUser(e.currentTarget.value)
+    }
+
+    const updateSubject: React.ChangeEventHandler<HTMLInputElement> = (e): void => {
+      setSubject(e.currentTarget.value)
+    }
+
+    const updateBody: React.ChangeEventHandler<HTMLTextAreaElement> = (e): void => {
+      setBody(e.currentTarget.value)
+    }
+
+    const sendInfoToAPI: React.MouseEventHandler<HTMLAnchorElement> = ()=> {
+      const data: ICreateMessageBody = {
+        from_user: 'correofromquemado@gmail.com',
+        to_user: toUser,
+        subject,
+        body,
+        category_id: 1        
+      }
+      console.log(data)
+      handleSnackbarOpen(1)
+      setOpen(false)
+      setBody('')
+      setToUser('')
+      setSubject('')
+    }
+    
+    React.useEffect(() => {
+      if (toUser.trim() !== '' && subject.trim() !== '' && body.trim() !== '') {
+        setIsFormReady(true);
+      } else {
+        setIsFormReady(false);
+      }
+    }, [toUser, subject, body]);
+
+
     return (
       <Sheet
         ref={ref}
@@ -50,17 +119,22 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
         <Box
           sx={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}
         >
-          <FormControl>
+          <FormControl required>
             <FormLabel>To</FormLabel>
-            <Input placeholder="email@email.com" aria-label="Message" />
+            <Input type='email' placeholder="email@email.com" aria-label="Message" onChange={updateToUserHandler} value={toUser} required/>
           </FormControl>
-
-          <Input placeholder="Subject" aria-label="Message" />
-          <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <FormControl required>
+            <FormLabel>Subject</FormLabel>
+            <Input placeholder="Subject" aria-label="Message" onChange={updateSubject} value={subject} />
+          </FormControl>
+          <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} required>
+          <FormLabel>Your message</FormLabel>
             <Textarea
               placeholder="Type your message here…"
               aria-label="Message"
               minRows={8}
+              onChange={updateBody}
+              value={body}
               endDecorator={
                 <Stack
                   direction="row"
@@ -91,7 +165,8 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
                   <Button
                     color="primary"
                     sx={{ borderRadius: 'sm' }}
-                    onClick={onClose}
+                    onClick={sendInfoToAPI}
+                    disabled={!isFormReady}
                   >
                     Send
                   </Button>
@@ -105,6 +180,26 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
             />
           </FormControl>
         </Box>
+        {/* <Snackbar
+                  color="success"
+                  open={openSnackBar[1]}
+                  onClose={() => handleSnackbarClose(1)}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  startDecorator={<CheckCircleRoundedIcon />}
+                  sx={{zIndex: 10}}
+                  endDecorator={
+                    <Button
+                      onClick={() => handleSnackbarClose(1)}
+                      size="sm"
+                      variant="soft"
+                      color="neutral"
+                    >
+                      Dismiss
+                    </Button>
+                  }
+                >
+                  Your message has been sent.
+                </Snackbar> */}
       </Sheet>
     );
   },
