@@ -57,8 +57,7 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
             >
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Avatar
-                  src={selectedMessage?.avatar}
-                  srcSet={selectedMessage?.avatar}
+                  src={'https://placehold.co/155x232/842520/white?text=' + selectedMessage.from_user_name[0].toUpperCase()}
                 />
                 <Box sx={{ ml: 2 }}>
                   <Typography

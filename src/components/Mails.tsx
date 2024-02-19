@@ -43,7 +43,7 @@ export default function EmailList({messagesInfo, setSelectedMessage} :Props): JS
               }
             >
               <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-                <Avatar alt="" src={item.avatar} />
+                <Avatar alt="" src={'https://placehold.co/155x232/f6f8fa/black?text=' + item.from_user_name[0].toUpperCase()} />
               </ListItemDecorator>
               <Box sx={{ pl: 2, width: '100%' }}>
                 <Box
