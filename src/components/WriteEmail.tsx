@@ -121,7 +121,7 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
         >
           <FormControl required>
             <FormLabel>To</FormLabel>
-            <Input type='email' placeholder="email@email.com" aria-label="Message" onChange={updateToUserHandler} value={toUser} required/>
+            <Input type='email' placeholder="email@vertech.com.co" aria-label="Message" onChange={updateToUserHandler} value={toUser} required/>
           </FormControl>
           <FormControl required>
             <FormLabel>Subject</FormLabel>

@@ -21,4 +21,5 @@ RUN npm run build
 # Step 7: Define the startup command
 FROM nginx
 EXPOSE 80
+COPY --from=builder /app/server_config/server_config.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
