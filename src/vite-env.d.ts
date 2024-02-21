@@ -17,6 +17,11 @@ interface IPostUserData {
   name?: string
 }
 
+interface IAuthenticatedUser {
+  email: string,
+  name: string
+}
+
 interface ISnackbarOpen{
   success: boolean,
   message: string,

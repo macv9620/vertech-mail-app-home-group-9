@@ -26,6 +26,8 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 
 import Navigation from './Navigation';
+import { useAuthContext } from '../context/AuthContextProvider';
+import { useNavigate } from 'react-router-dom';
 
 function ColorSchemeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -60,6 +62,18 @@ function ColorSchemeToggle() {
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
+  const {userLogged, setUserLogged} = useAuthContext()
+  const navigate = useNavigate()
+
+  const logout = () => {
+    sessionStorage.clear()
+    setUserLogged({
+      name: '',
+      email: ''
+    })
+    navigate('/')
+  }
+
   return (
     <Box
       sx={{
@@ -161,8 +175,7 @@ export default function Header() {
             sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}
           >
             <Avatar
-              src="https://i.pravatar.cc/40?img=2"
-              srcSet="https://i.pravatar.cc/80?img=2"
+              src={'https://placehold.co/155x232/f6f8fa/black?text=' + userLogged.name[0]}
               sx={{ maxWidth: '32px', maxHeight: '32px' }}
             />
           </MenuButton>
@@ -184,16 +197,15 @@ export default function Header() {
                 }}
               >
                 <Avatar
-                  src="https://i.pravatar.cc/40?img=2"
-                  srcSet="https://i.pravatar.cc/80?img=2"
+                  src={'https://placehold.co/155x232/f6f8fa/black?text=' + userLogged.name[0]}
                   sx={{ borderRadius: '50%' }}
                 />
                 <Box sx={{ ml: 1.5 }}>
                   <Typography level="title-sm" textColor="text.primary">
-                    Rick Sanchez
+                    {userLogged.name}
                   </Typography>
                   <Typography level="body-xs" textColor="text.tertiary">
-                    rick@email.com
+                    {userLogged.email}
                   </Typography>
                 </Box>
               </Box>
@@ -208,7 +220,7 @@ export default function Header() {
               Settings
             </MenuItem>
             <ListDivider />
-            <MenuItem>
+            <MenuItem onClick={logout}>
               <LogoutRoundedIcon />
               Log out
             </MenuItem>

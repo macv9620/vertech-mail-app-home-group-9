@@ -13,6 +13,7 @@ import FormatColorTextRoundedIcon from '@mui/icons-material/FormatColorTextRound
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
 import InsertPhotoRoundedIcon from '@mui/icons-material/InsertPhotoRounded';
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
+import { useAuthContext } from '../context/AuthContextProvider';
 // import Snackbar from "@mui/joy/Snackbar";
 
 interface WriteEmailProps {
@@ -38,6 +39,9 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
     const [subject, setSubject] = React.useState<string>('')
     const [body, setBody] = React.useState<string>('')
     const [isFormReady, setIsFormReady] = React.useState<boolean>(false)
+
+  const {userLogged}= useAuthContext()
+  console.log(userLogged)
 
 
     const handleSnackbarOpen = (index: number) => {

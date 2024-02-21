@@ -20,13 +20,17 @@ import EmailContent from '../components/EmailContent';
 import WriteEmail from '../components/WriteEmail';
 import Header from '../components/Header';
 import Snackbar from "@mui/joy/Snackbar";
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContextProvider';
 
 const HomeMail = () => {
+    const navigate = useNavigate()
     const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
     const [open, setOpen] = React.useState<boolean>(false);
     const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null)
     const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null)
     const [openSnackBar, setOpenSnackBar] = React.useState<boolean[]>([false, false, false]);
+    const {setUserLogged} = useAuthContext()
   
     const handleSnackbarClose = (index: number) => {
       const updatedOpen = [...openSnackBar];
@@ -97,8 +101,24 @@ const HomeMail = () => {
       // }
     ];
   
+
     React.useEffect(()=>{
+
         setMessagesInfo(dataFromAPI)
+
+        const authenticatedUser = sessionStorage.getItem('authenticatedUser')
+        if (authenticatedUser) {
+          try {
+            const loggedUserObject: IAuthenticatedUser = JSON.parse(authenticatedUser)
+            console.log(loggedUserObject)
+            setUserLogged(loggedUserObject)
+          } catch (error) {
+            console.error('Error parsing loggedUser from sessionStorage:', error)
+          }
+        } else {
+          navigate('/')
+        }
+
     },[])
   
     return (

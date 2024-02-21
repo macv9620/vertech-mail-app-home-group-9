@@ -91,6 +91,7 @@ export default function Login() {
       .then((res) => {
         handleSnackbarOpen(res.data.message, true);
         console.log(res);
+        sessionStorage.setItem('authenticatedUser', JSON.stringify(res.data.data))
         navigation("/home");
       })
       .catch((e) => {
