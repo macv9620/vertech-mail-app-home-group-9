@@ -1,148 +1,118 @@
-import * as React from 'react';
-import { CssVarsProvider } from '@mui/joy/styles';
-import { FocusTrap } from '@mui/base/FocusTrap';
-import CssBaseline from '@mui/joy/CssBaseline';
-import Box from '@mui/joy/Box';
-import Typography from '@mui/joy/Typography';
-import Button from '@mui/joy/Button';
-import Stack from '@mui/joy/Stack';
+import * as React from "react";
+import { CssVarsProvider } from "@mui/joy/styles";
+import { FocusTrap } from "@mui/base/FocusTrap";
+import CssBaseline from "@mui/joy/CssBaseline";
+import Box from "@mui/joy/Box";
+import Typography from "@mui/joy/Typography";
+import Button from "@mui/joy/Button";
+import Stack from "@mui/joy/Stack";
 
-import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
+import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
+import RestorePageTwoToneIcon from "@mui/icons-material/RestorePageTwoTone";
 // import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
-import Layout from '../components/Layout';
-import Navigation from '../components/Navigation';
-import Mails from '../components/Mails';
-import EmailContent from '../components/EmailContent';
-import WriteEmail from '../components/WriteEmail';
-import Header from '../components/Header';
+import Layout from "../components/Layout";
+import Navigation from "../components/Navigation";
+import Mails from "../components/Mails";
+import EmailContent from "../components/EmailContent";
+import WriteEmail from "../components/WriteEmail";
+import Header from "../components/Header";
 import Snackbar from "@mui/joy/Snackbar";
-import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../context/AuthContextProvider';
-import { getUserMessages } from '../services/getUserMessages';
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContextProvider";
+import { getUserMessages } from "../services/getUserMessages";
 
 const HomeMail = () => {
-    const navigate = useNavigate()
-    const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
-    const [open, setOpen] = React.useState<boolean>(false);
-    const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null)
-    const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null)
-    const {setUserLogged} = useAuthContext()
+  const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null);
+  const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
+  const { setUserLogged } = useAuthContext();
+  const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
+    const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
 
-    const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
-      success: true,
-      message: "",
-      open: false,
+  const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
+    success: true,
+    message: "",
+    open: false,
+  });
+
+  const closeSnackBar = () => {
+    setOpenSnackbar({ ...openSnackbar, open: false });
+  };
+
+  // React.useEffect(() => {
+  //   let userAuthEmail = "";
+
+  //   const authenticatedUser = sessionStorage.getItem("authenticatedUser");
+  //   if (authenticatedUser) {
+  //     try {
+  //       const loggedUserObject: IAuthenticatedUser =
+  //         JSON.parse(authenticatedUser);
+  //       userAuthEmail = loggedUserObject.email;
+  //       setUserLogged(loggedUserObject);
+  //     } catch (error) {
+  //       console.error("Error parsing loggedUser from sessionStorage:", error);
+  //     }
+  //   } else {
+  //     navigate("/");
+  //   }
+
+  //   getUserMessages(userAuthEmail).then((res) => {
+  //     console.log(res);
+  //     const messages = res.data?.sort(
+  //       (messageA: IMessageInfo, messageB: IMessageInfo) =>
+  //         messageB.message_id - messageA.message_id
+  //     );
+  //     setMessagesInfo(messages);
+  //   });
+  // }, [updateGetMessages]);
+
+  React.useEffect(() => {
+    let userAuthEmail = "";
+
+    const authenticatedUser = sessionStorage.getItem("authenticatedUser");
+    if (authenticatedUser) {
+      try {
+        const loggedUserObject: IAuthenticatedUser =
+          JSON.parse(authenticatedUser);
+        userAuthEmail = loggedUserObject.email;
+        setUserLogged(loggedUserObject);
+      } catch (error) {
+        console.error("Error parsing loggedUser from sessionStorage:", error);
+      }
+    } else {
+      navigate("/");
+    }
+
+    getUserMessages(userAuthEmail).then((res) => {
+      console.log(res);
+      const messages:IMessageInfo[] = res.data?.sort(
+        (messageA: IMessageInfo, messageB: IMessageInfo) =>
+          messageB.message_id - messageA.message_id
+      );
+      // Filter messages based on selected item
+      if (selectedItem === 'inbox') {
+        setMessagesInfo(messages?.filter(message => message.to_user === userAuthEmail));
+      } else if (selectedItem === 'sent') {
+        setMessagesInfo(messages?.filter(message => message.from_user === userAuthEmail));
+      } else {
+        setMessagesInfo(messages);
+      }
     });
+  }, [updateGetMessages, selectedItem]);
 
-    const closeSnackBar = () => {
-      setOpenSnackbar({ ...openSnackbar, open: false });
-    };
-
-
-  
-  
-  
-    // const dataFromAPI: IMessageInfo[] = [
-    //   {
-    //     from_user_name: 'Alex Jonnold',
-    //     from_user: 'a@mail.com',
-    //     to_user: 'b@mail.com',
-    //     avatar: 'https://i.pravatar.cc/40?img=3',
-    //     created_at: '21 Oct 2024 00:14',
-    //     subject: 'Details for our Yosemite Park hike',
-    //     body: "He stepped away from the mic. This was the best take he had done so far, but something seemed missing. Then it struck him all at once. Visuals ran in front of his eyes and music rang in his ears. His eager fingers went to work in an attempt to capture his thoughts hoping the results would produce something that was at least half their glory.",
-    //     color: 'warning.400',
-    //   },
-    //   {
-    //     from_user_name: 'Pete Sand',
-    //     from_user: 'a@mail.com',
-    //     to_user: 'b@mail.com',
-    //     avatar: 'https://i.pravatar.cc/40?img=4',
-    //     created_at: '06 Jul 2024 13:45',
-    //     subject: 'Tickets for our upcoming trip',
-    //     body: "The light blinded him. It was dark and he thought he was the only one in the area, but the light shining in his eyes proved him wrong. It came from about 100 feet away and was shining so directly into his eyes he couldn't make out anything about the person holding the light. There was only one thing to do in this situation. He reached into his pocket and pulled out a flashlight of his own that was much stronger than the one currently blinding him. He turned it on and pointed it into the stranger's eyes.",
-    //     color: 'success.400',
-    //   },
-    //   {
-    //     from_user_name: 'Kate Gates',
-    //     from_user: 'a@mail.com',
-    //     to_user: 'b@mail.com',
-    //     avatar: 'https://i.pravatar.cc/40?img=5',
-    //     created_at: '16 May 2024 14:52',
-    //     subject: 'Brunch this Saturday?',
-    //     body: "She closed her eyes and then opened them again. What she was seeing just didn't make sense. She shook her head seeing if that would help. It didn't. Although it seemed beyond reality, there was no denying she was witnessing a large formation of alien spaceships filling the sky.",
-    //     color: 'primary.500',
-    //   },
-    //   {
-    //     from_user_name: 'John Snow',
-    //     from_user: 'a@mail.com',
-    //     to_user: 'b@mail.com',
-    //     avatar: 'https://i.pravatar.cc/40?img=7',
-    //     created_at: '10 May 2024 23:11',
-    //     subject: 'Exciting News!',
-    //     body: "There was nothing to indicate Nancy was going to change the world. She looked like an average girl going to an average high school. It was the fact that everything about her seemed average that would end up becoming her superpower.",
-    //     color: 'danger.500',
-    //   },
-    //   // {
-    //   //   from_user_name: 'Michael Scott',
-    //   //   from_user: 'a@mail.com',
-    //   //   to_user: 'b@mail.com',
-    //   //   avatar: 'https://i.pravatar.cc/40?img=8',
-    //   //   created_at: '13 Apr 2024 20:19',
-    //   //   subject: 'Upcoming Product Launch',
-    //   //   body: "It had been a simple realization that had changed Debra's life perspective. It was really so simple that she was embarrassed that she had lived the previous five years with the way she measured her worth. Now that she saw what she had been doing, she could see how sad it was. That made her all the more relieved she had made the change. The number of hearts her Instagram posts received wasn't any longer the indication of her own self-worth.",
-    //   //   color: 'danger.500',
-    //   // },
-    //   // {
-    //   //   from_user_name: 'Kate Gates',
-    //   //   from_user: 'a@mail.com',
-    //   //   to_user: 'b@mail.com',
-    //   //   avatar: 'https://i.pravatar.cc/40?img=5',
-    //   //   created_at: '16 May 2024 08:22',
-    //   //   subject: 'Brunch this Saturday?',
-    //   //   body: "What were they eating? It didn't taste like anything she had ever eaten before and although she was famished, she didn't dare ask. She knew the answer would be one she didn't want to hear.",
-    //   //   color: 'primary.500',
-    //   // }
-    // ];
-  
-
-    React.useEffect(()=>{
-        let userAuthEmail = ''
-
-
-        const authenticatedUser = sessionStorage.getItem('authenticatedUser')
-        if (authenticatedUser) {
-          try {
-            const loggedUserObject: IAuthenticatedUser = JSON.parse(authenticatedUser)
-            userAuthEmail = loggedUserObject.email
-            setUserLogged(loggedUserObject)
-          } catch (error) {
-            console.error('Error parsing loggedUser from sessionStorage:', error)
-          }
-        } else {
-          navigate('/')
-        }
-
-        getUserMessages(userAuthEmail)
-          .then(res => {
-            console.log(res)
-            const messages = res.data?.sort((messageA: IMessageInfo, messageB: IMessageInfo) => messageB.message_id - messageA.message_id)
-            setMessagesInfo(messages)
-          })
-
-    },[])
-  
-    return (
-      <>
+  return (
+    <>
       <CssVarsProvider disableTransitionOnChange>
         <CssBaseline />
         {drawerOpen && (
           <Layout.SideDrawer onClose={() => setDrawerOpen(false)}>
-            <Navigation />
+            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </Layout.SideDrawer>
         )}
         <Stack
@@ -151,15 +121,15 @@ const HomeMail = () => {
           justifyContent="space-around"
           spacing={1}
           sx={{
-            display: { xs: 'flex', sm: 'none' },
-            zIndex: '999',
+            display: { xs: "flex", sm: "none" },
+            zIndex: "999",
             bottom: 0,
-            position: 'fixed',
-            width: '100dvw',
+            position: "fixed",
+            width: "100dvw",
             py: 2,
-            backgroundColor: 'background.body',
-            borderTop: '1px solid',
-            borderColor: 'divider',
+            backgroundColor: "background.body",
+            borderTop: "1px solid",
+            borderColor: "divider",
           }}
         >
           <Button
@@ -169,7 +139,7 @@ const HomeMail = () => {
             component="a"
             size="sm"
             startDecorator={<EmailRoundedIcon />}
-            sx={{ flexDirection: 'column', '--Button-gap': 0 }}
+            sx={{ flexDirection: "column", "--Button-gap": 0 }}
           >
             Email
           </Button>
@@ -180,7 +150,7 @@ const HomeMail = () => {
             component="a"
             size="sm"
             startDecorator={<PeopleAltRoundedIcon />}
-            sx={{ flexDirection: 'column', '--Button-gap': 0 }}
+            sx={{ flexDirection: "column", "--Button-gap": 0 }}
           >
             Team
           </Button>
@@ -191,7 +161,7 @@ const HomeMail = () => {
             component="a"
             size="sm"
             startDecorator={<FolderRoundedIcon />}
-            sx={{ flexDirection: 'column', '--Button-gap': 0 }}
+            sx={{ flexDirection: "column", "--Button-gap": 0 }}
           >
             Files
           </Button>
@@ -199,8 +169,8 @@ const HomeMail = () => {
         <Layout.Root
           sx={{
             ...(drawerOpen && {
-              height: '100vh',
-              overflow: 'hidden',
+              height: "100vh",
+              overflow: "hidden",
             }),
           }}
         >
@@ -208,19 +178,23 @@ const HomeMail = () => {
             <Header />
           </Layout.Header>
           <Layout.SideNav>
-            <Navigation />
+            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </Layout.SideNav>
           <Layout.SidePane>
             <Box
               sx={{
                 p: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Box sx={{ alignItems: 'center', gap: 1 }}>
-                <Typography level="title-lg" textColor="text.secondary" component="h1">
+              <Box sx={{ alignItems: "center", gap: 1 }}>
+                <Typography
+                  level="title-lg"
+                  textColor="text.secondary"
+                  component="h1"
+                >
                   My inbox
                 </Typography>
                 <Typography level="title-sm" textColor="text.tertiary">
@@ -228,46 +202,68 @@ const HomeMail = () => {
                 </Typography>
               </Box>
               <Button
+                onClick={() => setUpdateGetMessages(!updateGetMessages)}
+                sx={{
+                  marginLeft: "20px",
+                  bgcolor: "white",
+                  "&:hover": {
+                    bgcolor: "#bdc3c4aa", // Set hover background color to white
+                  },
+                }}
+              >
+                <RestorePageTwoToneIcon sx={{ color: "success.600" }} />
+              </Button>
+              <Button
                 size="sm"
                 startDecorator={<CreateRoundedIcon />}
                 onClick={() => setOpen(true)}
-                sx={{ ml: 'auto' }}
+                sx={{ ml: "auto" }}
               >
                 Create email
               </Button>
               <FocusTrap open={open} disableAutoFocus disableEnforceFocus>
-                <WriteEmail open={open} onClose={() => setOpen(false) } setOpen={setOpen} openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} />
+                <WriteEmail
+                  updateGetMessages={updateGetMessages}
+                  setUpdateGetMessages={setUpdateGetMessages}
+                  open={open}
+                  onClose={() => setOpen(false)}
+                  setOpen={setOpen}
+                  openSnackbar={openSnackbar}
+                  setOpenSnackbar={setOpenSnackbar}
+                />
               </FocusTrap>
             </Box>
-            <Mails messagesInfo={messagesInfo} setSelectedMessage={setSelectedMessage} />
+            <Mails
+              messagesInfo={messagesInfo}
+              setSelectedMessage={setSelectedMessage}
+            />
           </Layout.SidePane>
           <Layout.Main>
             <EmailContent selectedMessage={selectedMessage} />
           </Layout.Main>
         </Layout.Root>
       </CssVarsProvider>
-            <Snackbar
-            color={openSnackbar.success? 'success': 'danger'}
-            open={openSnackbar.open}
-            onClose={() => closeSnackBar()}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            // startDecorator={<CheckCircleRoundedIcon />}
-            endDecorator={
-              <Button
-                onClick={() => closeSnackBar()}
-                size="sm"
-                variant="soft"
-                color="neutral"
-              >
-                Dismiss
-              </Button>
-            }
+      <Snackbar
+        color={openSnackbar.success ? "success" : "danger"}
+        open={openSnackbar.open}
+        onClose={() => closeSnackBar()}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // startDecorator={<CheckCircleRoundedIcon />}
+        endDecorator={
+          <Button
+            onClick={() => closeSnackBar()}
+            size="sm"
+            variant="soft"
+            color="neutral"
           >
-            {openSnackbar.message}
-          </Snackbar>
+            Dismiss
+          </Button>
+        }
+      >
+        {openSnackbar.message}
+      </Snackbar>
+    </>
+  );
+};
 
-      </>
-    );
-  }
-
-export {HomeMail}
+export { HomeMail };

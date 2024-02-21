@@ -23,11 +23,13 @@ interface WriteEmailProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   openSnackbar: ISnackbarOpen;
   setOpenSnackbar: React.Dispatch<React.SetStateAction<ISnackbarOpen>>;
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  updateGetMessages: boolean
 }
 
 const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
   function WriteEmail(
-    { open, onClose, setOpen, setOpenSnackbar },
+    { open, onClose, setOpen, setOpenSnackbar, updateGetMessages, setUpdateGetMessages },
     ref
   ) {
     const [toUser, setToUser] = React.useState<string>("");
@@ -57,10 +59,26 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
       setSubject(e.currentTarget.value);
     };
 
+    // const updateBody: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    //   e
+    // ): void => {
+    //   setBody(e.currentTarget.value);
+    // };
+
     const updateBody: React.ChangeEventHandler<HTMLTextAreaElement> = (
-      e
+      e: React.ChangeEvent<HTMLTextAreaElement>
     ): void => {
-      setBody(e.currentTarget.value);
+      // Check if Enter key is pressed
+      if (e.nativeEvent instanceof KeyboardEvent && (e.nativeEvent as KeyboardEvent).key === 'Enter' || (e.nativeEvent as KeyboardEvent).keyCode === 13) {
+        // Prevent the default behavior of Enter key press which is adding a new line
+        e.preventDefault();
+        // Insert a newline character into the text area
+        const newText = e.currentTarget.value + '\n';
+        setBody(newText);
+      } else {
+        // Update the body state with the current value of the textarea
+        setBody(e.currentTarget.value);
+      }
     };
 
     const hadleSubmit: React.MouseEventHandler<HTMLAnchorElement> = () => {
@@ -81,6 +99,7 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
           setBody("");
           setToUser("");
           setSubject("");
+          setUpdateGetMessages(!updateGetMessages)
         })
         .catch((e) => {
           console.log(e);

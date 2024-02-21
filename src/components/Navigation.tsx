@@ -11,8 +11,24 @@ import OutboxRoundedIcon from '@mui/icons-material/OutboxRounded';
 import DraftsRoundedIcon from '@mui/icons-material/DraftsRounded';
 import AssistantPhotoRoundedIcon from '@mui/icons-material/AssistantPhotoRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import React from 'react';
 
-export default function Navigation() {
+type Propos = {
+  selectedItem: string,
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function Navigation({selectedItem, setSelectedItem}: Propos) {
+
+  const filterByInbox = () =>{
+    setSelectedItem('inbox')
+  }
+
+  const filterBySent = () =>{
+    setSelectedItem('sent')
+  }
+
+
   return (
     <List size="sm" sx={{ '--ListItem-radius': '8px', '--List-gap': '4px' }}>
       <ListItem nested>
@@ -20,8 +36,11 @@ export default function Navigation() {
           Browse
         </ListSubheader>
         <List aria-labelledby="nav-list-browse">
-          <ListItem>
-            <ListItemButton selected>
+        <ListItem>
+            <ListItemButton
+              selected={selectedItem === 'inbox'}
+              onClick={filterByInbox}
+            >
               <ListItemDecorator>
                 <InboxRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -29,7 +48,10 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton disabled>
+            <ListItemButton
+              selected={selectedItem === 'sent'}
+              onClick={filterBySent}
+            >
               <ListItemDecorator>
                 <OutboxRoundedIcon fontSize="small" />
               </ListItemDecorator>

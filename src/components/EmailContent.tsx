@@ -57,7 +57,10 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
             >
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Avatar
-                  src={'https://placehold.co/155x232/842520/white?text=' + selectedMessage.from_user_name[0].toUpperCase()}
+                  src={
+                    "https://placehold.co/155x232/842520/white?text=" +
+                    selectedMessage.from_user_name[0].toUpperCase()
+                  }
                 />
                 <Box sx={{ ml: 2 }}>
                   <Typography
@@ -263,7 +266,12 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
         )}
 
         <Typography level="body-sm" mt={2} mb={2}>
-          {selectedMessage?.body}
+          {selectedMessage?.body.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
         </Typography>
       </Sheet>
     </>
