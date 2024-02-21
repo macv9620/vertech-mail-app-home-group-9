@@ -27,7 +27,7 @@ interface WriteEmailProps {
 
 const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
   function WriteEmail(
-    { open, onClose, setOpen, openSnackbar, setOpenSnackbar },
+    { open, onClose, setOpen, setOpenSnackbar },
     ref
   ) {
     const [toUser, setToUser] = React.useState<string>("");
