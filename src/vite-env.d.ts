@@ -12,9 +12,9 @@ interface IMessageInfo {
 }
 
 interface IPostUserData {
-  name: string,
   email: string,
-  password: string
+  password: string,
+  name?: string
 }
 
 interface ISnackbarOpen{
