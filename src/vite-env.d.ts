@@ -1,10 +1,11 @@
 /// <reference types="vite/client" />
 
 interface IMessageInfo {
+    message_id: number,
     from_user_name: string,
     from_user: string,
     to_user: string,
-    avatar: string,
+    avatar?: string,
     created_at: string,
     subject: string,
     body: string,

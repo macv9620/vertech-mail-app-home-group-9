@@ -14,6 +14,7 @@ type Props = {
 }
 export default function EmailList({messagesInfo, setSelectedMessage} :Props): JSX.Element {
   const[selectedIndex, setSelectedIndex] = React.useState<number | null>(null)
+  const colors: string[] = ['success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400', 'success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400', 'success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400', 'success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400', 'success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400', 'success.400', 'warning.400', 'warning.400', 'danger.500', 'primary.500', 'success.400']
 
   return (
     <Box
@@ -60,7 +61,7 @@ export default function EmailList({messagesInfo, setSelectedMessage} :Props): JS
                         width: '8px',
                         height: '8px',
                         borderRadius: '99px',
-                        bgcolor: item.color,
+                        bgcolor: colors[index],
                       }}
                     />
                   </Box>
