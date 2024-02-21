@@ -45,33 +45,6 @@ const HomeMail = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
 
-  // React.useEffect(() => {
-  //   let userAuthEmail = "";
-
-  //   const authenticatedUser = sessionStorage.getItem("authenticatedUser");
-  //   if (authenticatedUser) {
-  //     try {
-  //       const loggedUserObject: IAuthenticatedUser =
-  //         JSON.parse(authenticatedUser);
-  //       userAuthEmail = loggedUserObject.email;
-  //       setUserLogged(loggedUserObject);
-  //     } catch (error) {
-  //       console.error("Error parsing loggedUser from sessionStorage:", error);
-  //     }
-  //   } else {
-  //     navigate("/");
-  //   }
-
-  //   getUserMessages(userAuthEmail).then((res) => {
-  //     console.log(res);
-  //     const messages = res.data?.sort(
-  //       (messageA: IMessageInfo, messageB: IMessageInfo) =>
-  //         messageB.message_id - messageA.message_id
-  //     );
-  //     setMessagesInfo(messages);
-  //   });
-  // }, [updateGetMessages]);
-
   React.useEffect(() => {
     let userAuthEmail = "";
 
@@ -175,7 +148,7 @@ const HomeMail = () => {
           }}
         >
           <Layout.Header>
-            <Header />
+            <Header selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </Layout.Header>
           <Layout.SideNav>
             <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />

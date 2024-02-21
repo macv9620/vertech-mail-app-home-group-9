@@ -60,7 +60,12 @@ function ColorSchemeToggle() {
   );
 }
 
-export default function Header() {
+type Propos = {
+  selectedItem: string,
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>
+}
+
+export default function Header({setSelectedItem, selectedItem}: Propos) {
   const [open, setOpen] = React.useState(false);
   const {userLogged, setUserLogged} = useAuthContext()
   const navigate = useNavigate()
@@ -132,7 +137,7 @@ export default function Header() {
           <ModalClose />
           <DialogTitle>Acme Co.</DialogTitle>
           <Box sx={{ px: 1 }}>
-            <Navigation />
+            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
           </Box>
         </Drawer>
       </Box>
