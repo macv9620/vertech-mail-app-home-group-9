@@ -9,4 +9,16 @@ interface IMessageInfo {
     subject: string,
     body: string,
     color: string
-  }
+}
+
+interface IPostUserData {
+  name: string,
+  email: string,
+  password: string
+}
+
+interface ISnackbarOpen{
+  success: boolean,
+  message: string,
+  open: boolean
+}
