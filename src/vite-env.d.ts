@@ -27,3 +27,11 @@ interface ISnackbarOpen{
   message: string,
   open: boolean
 }
+
+interface IPostMessageData {
+  subject: string,
+  body: string,
+  to_user: string,
+  from_user: string
+  category_id: number
+}

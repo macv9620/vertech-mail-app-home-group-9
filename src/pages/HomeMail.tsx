@@ -11,7 +11,7 @@ import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+// import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import Layout from '../components/Layout';
 import Navigation from '../components/Navigation';
@@ -29,14 +29,19 @@ const HomeMail = () => {
     const [open, setOpen] = React.useState<boolean>(false);
     const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null)
     const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null)
-    const [openSnackBar, setOpenSnackBar] = React.useState<boolean[]>([false, false, false]);
     const {setUserLogged} = useAuthContext()
-  
-    const handleSnackbarClose = (index: number) => {
-      const updatedOpen = [...openSnackBar];
-      updatedOpen[index] = false;
-      setOpenSnackBar(updatedOpen);
+
+    const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
+      success: true,
+      message: "",
+      open: false,
+    });
+
+    const closeSnackBar = () => {
+      setOpenSnackbar({ ...openSnackbar, open: false });
     };
+  
+  
   
     const dataFromAPI: IMessageInfo[] = [
       {
@@ -110,7 +115,6 @@ const HomeMail = () => {
         if (authenticatedUser) {
           try {
             const loggedUserObject: IAuthenticatedUser = JSON.parse(authenticatedUser)
-            console.log(loggedUserObject)
             setUserLogged(loggedUserObject)
           } catch (error) {
             console.error('Error parsing loggedUser from sessionStorage:', error)
@@ -122,6 +126,7 @@ const HomeMail = () => {
     },[])
   
     return (
+      <>
       <CssVarsProvider disableTransitionOnChange>
         <CssBaseline />
         {drawerOpen && (
@@ -220,29 +225,9 @@ const HomeMail = () => {
                 Create email
               </Button>
               <FocusTrap open={open} disableAutoFocus disableEnforceFocus>
-                <WriteEmail open={open} onClose={() => setOpen(false) } setOpen={setOpen} openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} />
+                <WriteEmail open={open} onClose={() => setOpen(false) } setOpen={setOpen} openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} />
               </FocusTrap>
             </Box>
-            <Snackbar
-                    color="success"
-                    open={openSnackBar[1]}
-                    onClose={() => handleSnackbarClose(1)}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    startDecorator={<CheckCircleRoundedIcon />}
-                    sx={{zIndex: 10}}
-                    endDecorator={
-                      <Button
-                        onClick={() => handleSnackbarClose(1)}
-                        size="sm"
-                        variant="soft"
-                        color="neutral"
-                      >
-                        Dismiss
-                      </Button>
-                    }
-                  >
-                    Your message has been sent.
-                  </Snackbar>
             <Mails messagesInfo={messagesInfo} setSelectedMessage={setSelectedMessage} />
           </Layout.SidePane>
           <Layout.Main>
@@ -250,6 +235,27 @@ const HomeMail = () => {
           </Layout.Main>
         </Layout.Root>
       </CssVarsProvider>
+            <Snackbar
+            color={openSnackbar.success? 'success': 'danger'}
+            open={openSnackbar.open}
+            onClose={() => closeSnackBar()}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            // startDecorator={<CheckCircleRoundedIcon />}
+            endDecorator={
+              <Button
+                onClick={() => closeSnackBar()}
+                size="sm"
+                variant="soft"
+                color="neutral"
+              >
+                Dismiss
+              </Button>
+            }
+          >
+            {openSnackbar.message}
+          </Snackbar>
+
+      </>
     );
   }
 
