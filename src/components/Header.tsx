@@ -67,10 +67,11 @@ type Propos = {
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
   messagesInfo: IMessageInfo[] | null;
   setMessagesInfo: React.Dispatch<React.SetStateAction<IMessageInfo[] | null>>;
+  userAuthEmail: string;
 };
 
 
-export default function ({setUpdateGetMessages, updateGetMessages, setSelectedItem, selectedItem, messagesInfo, setMessagesInfo}: Propos) {
+export default function ({setUpdateGetMessages, updateGetMessages, setSelectedItem, selectedItem, messagesInfo, setMessagesInfo, userAuthEmail}: Propos) {
   const [searchTerm, setSearchTerm] = React.useState<string>('');
   const [open, setOpen] = React.useState(false);
   const {userLogged, setUserLogged} = useAuthContext();
@@ -78,10 +79,9 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
   const [messagesInfoOrigin, setMessagesInfoOrigin] = React.useState<IMessageInfo[] | null>(null);
 
   React.useEffect(() => {
-    if (messagesInfo && !messagesInfoOrigin) {
-      setMessagesInfoOrigin(messagesInfo);
-    }
+    setMessagesInfoOrigin(messagesInfoOrigin ?? messagesInfo);
   }, [messagesInfo, messagesInfoOrigin]);
+
 
   const logout = () => {
     sessionStorage.clear()
@@ -93,16 +93,24 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
   }
 
   const handleSearch = () => {
-    console.log(messagesInfo);
     if (messagesInfoOrigin) {
-      const filteredMessages = messagesInfoOrigin.filter(
-          (message) =>
-              message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              message.from_user.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      let filteredMessages = [...messagesInfoOrigin];
+      if (selectedItem === 'inbox') {
+        filteredMessages = filteredMessages.filter(message => message.to_user === userAuthEmail);
+      } else if (selectedItem === 'sent') {
+        filteredMessages = filteredMessages.filter(message => message.from_user === userAuthEmail);
+      }
+      if (searchTerm.trim() !== "") {
+        filteredMessages = filteredMessages.filter(
+            message =>
+                message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                message.from_user.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
       setMessagesInfo(filteredMessages);
     }
   };
+
 
   const clearSearch = () => {
     setSearchTerm('');
