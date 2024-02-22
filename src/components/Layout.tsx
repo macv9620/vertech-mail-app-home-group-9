@@ -4,11 +4,17 @@ import Sheet from '@mui/joy/Sheet';
 
 function Root(props: BoxProps) {
   return (
+    <Box sx={{
+      display: 'flex',
+      width: '98vw',
+      justifyContent: 'center'
+    }}>
     <Box
       {...props}
       sx={[
         {
           display: 'grid',
+          justifyContent: 'center',
           gridTemplateColumns: {
             xs: '1fr',
             sm: 'minmax(64px, 200px) minmax(450px, 1fr)',
@@ -20,6 +26,7 @@ function Root(props: BoxProps) {
         ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
       ]}
     />
+    </Box>
   );
 }
 
