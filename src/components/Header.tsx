@@ -61,7 +61,7 @@ function ColorSchemeToggle() {
 }
 
 type Propos = {
-  updateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  updateGetMessages: boolean;
   setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
   selectedItem: string;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
