@@ -65,7 +65,7 @@ type Propos = {
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function Header({setSelectedItem, selectedItem}: Propos) {
+export default function ({setSelectedItem, selectedItem}: Propos) {
   const [open, setOpen] = React.useState(false);
   const {userLogged, setUserLogged} = useAuthContext()
   const navigate = useNavigate()
