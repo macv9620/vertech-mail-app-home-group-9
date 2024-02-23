@@ -3,8 +3,10 @@
     "containerDefinitions": [
         {
             "name": "front_email_app",
-            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository",
-            "cpu": 0,
+            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository:latest",
+            "cpu": 1024,
+            "memory": 1843,
+            "memoryReservation": 1536,
             "portMappings": [
                 {
                     "name": "front_email_app-80-tcp",
@@ -38,6 +40,7 @@
         }
     ],
     "family": "email_app_task_definition",
+    "taskRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "revision": 1,
@@ -78,7 +81,7 @@
         "FARGATE"
     ],
     "cpu": "1024",
-    "memory": "3072",
+    "memory": "2048",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
