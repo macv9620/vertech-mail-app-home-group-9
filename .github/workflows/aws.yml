@@ -37,7 +37,7 @@ env:
   ECS_CLUSTER: email_app_cluster_2 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .github/workflows/email_app_task_definition-revision1.json # set this to the path to your Amazon ECS task definition
     # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: email_app_container
+  CONTAINER_NAME: front_email_app
 
 jobs:
   deploy:
