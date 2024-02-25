@@ -51,6 +51,10 @@ jobs:
       - name: Create .env file
         run: |
           echo "VITE_BASE_URL_FOREST_SERVICE=${{ secrets.NEW_BASE_BACKEND_URL }}" > .env
+
+      - name: Create .env.production file
+        run: |
+          echo "VITE_BASE_URL_FOREST_SERVICE=${{ secrets.NEW_BASE_BACKEND_URL }}" > .env.production
       
       - name: Replace VITE_BASE_URL_FOREST_SERVICE in .env.production file
         run: |
