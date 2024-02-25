@@ -232,7 +232,7 @@ export default function Login() {
             </Box>
             <Box component="footer" sx={{ py: 3 }}>
               <Typography level="body-xs" textAlign="center">
-                © Ver Tech+ Mail {new Date().getFullYear()} v.1.0.0
+                © Ver Tech+ Mail {new Date().getFullYear()}
               </Typography>
               <Typography level="body-xs" textAlign="center">
                 v.1.0.1
