@@ -1,12 +1,12 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:637423626700:task-definition/email_app_task_definition:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:637423626700:task-definition/email_app_task_definition:14",
     "containerDefinitions": [
         {
             "name": "front_email_app",
-            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository:latest",
-            "cpu": 1024,
-            "memory": 1843,
-            "memoryReservation": 1536,
+            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository:c775dba09f17eb8cca970785aec59e533f7aaea6",
+            "cpu": 0,
+            "memory": 1024,
+            "memoryReservation": 1024,
             "portMappings": [
                 {
                     "name": "front_email_app-80-tcp",
@@ -17,16 +17,9 @@
                 }
             ],
             "essential": true,
-            "environment": [
-                {
-                    "name": "VITE_BASE_URL_FOREST_SERVICE",
-                    "value": "http://localhost:3000/api"
-                }
-            ],
-            "environmentFiles": [],
+            "environment": [],
             "mountPoints": [],
             "volumesFrom": [],
-            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -43,7 +36,7 @@
     "taskRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 14,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -58,6 +51,12 @@
         },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -80,13 +79,13 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "1024",
-    "memory": "2048",
+    "cpu": "512",
+    "memory": "1024",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-02-23T02:28:20.889Z",
+    "registeredAt": "2024-02-25T19:34:44.836Z",
     "registeredBy": "arn:aws:iam::637423626700:user/mateo_vasco",
     "tags": []
 }
