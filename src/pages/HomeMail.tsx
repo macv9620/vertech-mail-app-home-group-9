@@ -19,7 +19,7 @@ import Navigation from "../components/Navigation";
 import Mails from "../components/Mails";
 import EmailContent from "../components/EmailContent";
 import WriteEmail from "../components/WriteEmail";
-import Header from "../components/Header";
+import { Header } from "../components/Header";
 import Snackbar from "@mui/joy/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContextProvider";
@@ -27,13 +27,14 @@ import { getUserMessages } from "../services/getUserMessages";
 
 const HomeMail = () => {
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null);
   const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
   const { setUserLogged } = useAuthContext();
   const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
+  const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
+  const [userAuthEmail, setUserEmailstring] = React.useState<string>('null');
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 
   const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
     success: true,
@@ -54,6 +55,7 @@ const HomeMail = () => {
         const loggedUserObject: IAuthenticatedUser =
           JSON.parse(authenticatedUser);
         userAuthEmail = loggedUserObject.email;
+        setUserEmailstring(userAuthEmail);
         setUserLogged(loggedUserObject);
       } catch (error) {
         console.error("Error parsing loggedUser from sessionStorage:", error);
@@ -79,15 +81,11 @@ const HomeMail = () => {
     });
   }, [updateGetMessages, selectedItem]);
 
+
   return (
     <>
       <CssVarsProvider disableTransitionOnChange>
         <CssBaseline />
-        {drawerOpen && (
-          <Layout.SideDrawer onClose={() => setDrawerOpen(false)}>
-            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
-          </Layout.SideDrawer>
-        )}
         <Stack
           id="tab-bar"
           direction="row"
@@ -141,17 +139,17 @@ const HomeMail = () => {
         </Stack>
         <Layout.Root
           sx={{
-            ...(drawerOpen && {
+            ...(true && {
               height: "100vh",
               overflow: "hidden",
             }),
           }}
         >
           <Layout.Header>
-            <Header selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+            <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} userAuthEmail={userAuthEmail} setUpdateGetMessages={setUpdateGetMessages} updateGetMessages={updateGetMessages} selectedItem={selectedItem} setSelectedItem={setSelectedItem} messagesInfo={messagesInfo} setMessagesInfo={setMessagesInfo}/>
           </Layout.Header>
           <Layout.SideNav>
-            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} setSearchTerm={setSearchTerm} setUpdateGetMessages={setUpdateGetMessages} updateGetMessages={updateGetMessages}/>
           </Layout.SideNav>
           <Layout.SidePane>
             <Box
