@@ -13,19 +13,32 @@ import AssistantPhotoRoundedIcon from '@mui/icons-material/AssistantPhotoRounded
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import React from 'react';
 
+type ClearSearchFunction = () => void;
+
 type Propos = {
   selectedItem: string,
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>,
+  clearSearch?: ClearSearchFunction
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>,
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>,
+  updateGetMessages: boolean
 }
 
-export default function Navigation({selectedItem, setSelectedItem}: Propos) {
+export default function Navigation({selectedItem, setSelectedItem, setSearchTerm, setUpdateGetMessages, updateGetMessages}: Propos) {
 
   const filterByInbox = () =>{
     setSelectedItem('inbox')
+    // console.log(clearSearch)
+    setSearchTerm("")
+    setUpdateGetMessages(!updateGetMessages)
+    // clearSearch()
   }
 
   const filterBySent = () =>{
     setSelectedItem('sent')
+    setSearchTerm("")
+    setUpdateGetMessages(!updateGetMessages)
+    // clearSearch()
   }
 
 

@@ -1,33 +1,30 @@
-import * as React from 'react';
-import { useColorScheme } from '@mui/joy/styles';
-import Box from '@mui/joy/Box';
-import Typography from '@mui/joy/Typography';
-import IconButton from '@mui/joy/IconButton';
-import Stack from '@mui/joy/Stack';
-import Avatar from '@mui/joy/Avatar';
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Tooltip from '@mui/joy/Tooltip';
-import Dropdown from '@mui/joy/Dropdown';
-import Menu from '@mui/joy/Menu';
-import MenuButton from '@mui/joy/MenuButton';
-import MenuItem from '@mui/joy/MenuItem';
-import ListDivider from '@mui/joy/ListDivider';
-import Drawer from '@mui/joy/Drawer';
-import ModalClose from '@mui/joy/ModalClose';
-import DialogTitle from '@mui/joy/DialogTitle';
+import * as React from "react";
+import { useColorScheme } from "@mui/joy/styles";
+import Box from "@mui/joy/Box";
+import Typography from "@mui/joy/Typography";
+import IconButton from "@mui/joy/IconButton";
+import Stack from "@mui/joy/Stack";
+import Avatar from "@mui/joy/Avatar";
+import Input from "@mui/joy/Input";
+import Button from "@mui/joy/Button";
+import Tooltip from "@mui/joy/Tooltip";
+import Dropdown from "@mui/joy/Dropdown";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import ListDivider from "@mui/joy/ListDivider";
 
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
-import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-import Navigation from './Navigation';
-import { useAuthContext } from '../context/AuthContextProvider';
-import { useNavigate } from 'react-router-dom';
+
+
+import { useAuthContext } from "../context/AuthContextProvider";
+import { useNavigate } from "react-router-dom";
 
 function ColorSchemeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -45,16 +42,16 @@ function ColorSchemeToggle() {
         size="sm"
         variant="plain"
         color="neutral"
-        sx={{ alignSelf: 'center' }}
+        sx={{ alignSelf: "center" }}
         onClick={() => {
-          if (mode === 'light') {
-            setMode('dark');
+          if (mode === "light") {
+            setMode("dark");
           } else {
-            setMode('light');
+            setMode("light");
           }
         }}
       >
-        {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+        {mode === "light" ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
       </IconButton>
     </Tooltip>
   );
@@ -68,61 +65,86 @@ type Propos = {
   messagesInfo: IMessageInfo[] | null;
   setMessagesInfo: React.Dispatch<React.SetStateAction<IMessageInfo[] | null>>;
   userAuthEmail: string;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 };
 
+type ClearSearchFunction = () => void;
 
-export default function ({setUpdateGetMessages, updateGetMessages, setSelectedItem, selectedItem, messagesInfo, setMessagesInfo, userAuthEmail}: Propos) {
-  const [searchTerm, setSearchTerm] = React.useState<string>('');
-  const [open, setOpen] = React.useState(false);
-  const {userLogged, setUserLogged} = useAuthContext();
+const Header =  ({
+  setUpdateGetMessages,
+  updateGetMessages,
+  searchTerm,
+  selectedItem,
+  messagesInfo,
+  setMessagesInfo,
+  userAuthEmail,
+  setSearchTerm
+}: Propos) => {
+
+
+  const { userLogged, setUserLogged } = useAuthContext();
   const navigate = useNavigate();
-  const [messagesInfoOrigin, setMessagesInfoOrigin] = React.useState<IMessageInfo[] | null>(null);
+  const [messagesInfoOrigin, setMessagesInfoOrigin] = React.useState<
+    IMessageInfo[] | null
+  >(null);
 
   React.useEffect(() => {
     setMessagesInfoOrigin(messagesInfoOrigin ?? messagesInfo);
   }, [messagesInfo, messagesInfoOrigin]);
 
+  // React.useEffect(()=> {
+  //   clearSearch()
+  // }, [selectedItem])
 
   const logout = () => {
-    sessionStorage.clear()
+    sessionStorage.clear();
     setUserLogged({
-      name: '',
-      email: ''
-    })
-    navigate('/')
-  }
+      name: "",
+      email: "",
+    });
+    navigate("/");
+  };
 
   const handleSearch = () => {
     if (messagesInfoOrigin) {
       let filteredMessages = [...messagesInfoOrigin];
-      if (selectedItem === 'inbox') {
-        filteredMessages = filteredMessages.filter(message => message.to_user === userAuthEmail);
-      } else if (selectedItem === 'sent') {
-        filteredMessages = filteredMessages.filter(message => message.from_user === userAuthEmail);
-      }
-      if (searchTerm.trim() !== "") {
+      if (selectedItem === "inbox") {
         filteredMessages = filteredMessages.filter(
-            message =>
-                message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                message.from_user.toLowerCase().includes(searchTerm.toLowerCase())
+          (message) =>
+            message.to_user === userAuthEmail &&
+            (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
+      } else if (selectedItem === "sent") {
+        console.log(userAuthEmail)
+        console.log(filteredMessages)
+
+        filteredMessages = filteredMessages.filter(
+          (message) =>
+            message.to_user === userAuthEmail &&
+            (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+
+        console.log(filteredMessages)
       }
       setMessagesInfo(filteredMessages);
     }
   };
 
-
-  const clearSearch = () => {
-    setSearchTerm('');
+  const clearSearch: ClearSearchFunction = () => {
+    console.log("Borro filtro")
+    setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
   };
 
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: "flex",
         flexGrow: 1,
-        justifyContent: 'space-between',
+        justifyContent: "space-between",
       }}
     >
       <Stack
@@ -130,7 +152,7 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
         justifyContent="center"
         alignItems="center"
         spacing={1}
-        sx={{ display: { xs: 'none', sm: 'flex' } }}
+        sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Button
           variant="plain"
@@ -138,7 +160,7 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
           aria-pressed="true"
           component="a"
           size="sm"
-          sx={{ alignSelf: 'center' }}
+          sx={{ alignSelf: "center" }}
         >
           Email
         </Button>
@@ -148,7 +170,7 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
           color="neutral"
           component="a"
           size="sm"
-          sx={{ alignSelf: 'center' }}
+          sx={{ alignSelf: "center" }}
         >
           Team
         </Button>
@@ -158,71 +180,60 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
           color="neutral"
           component="a"
           size="sm"
-          sx={{ alignSelf: 'center' }}
+          sx={{ alignSelf: "center" }}
         >
           Files
         </Button>
       </Stack>
-      <Box sx={{ display: { xs: 'inline-flex', sm: 'none' } }}>
-        <IconButton variant="plain" color="neutral" onClick={() => setOpen(true)}>
-          <MenuRoundedIcon />
-        </IconButton>
-        <Drawer
-          sx={{ display: { xs: 'inline-flex', sm: 'none' } }}
-          open={open}
-          onClose={() => setOpen(false)}
-        >
-          <ModalClose />
-          <DialogTitle>Acme Co.</DialogTitle>
-          <Box sx={{ px: 1 }}>
-            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
-          </Box>
-        </Drawer>
-      </Box>
 
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
+          display: "flex",
+          flexDirection: "row",
           gap: 1.5,
-          alignItems: 'center',
+          alignItems: "center",
         }}
       >
         <Input
           size="sm"
           variant="outlined"
-          placeholder="Search anything…"
-          startDecorator={<SearchRoundedIcon color="primary" />}
+          placeholder="Filter by email or subject"
+          startDecorator={<SearchRoundedIcon sx={{cursor: "pointer"}} color="primary" />}
           sx={{
-            alignSelf: 'center',
+            alignSelf: "center",
             display: {
-              xs: 'none',
-              sm: 'flex',
+              xs: "none",
+              sm: "flex",
+              width: 210
             },
           }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onBlur={handleSearch} // Aplicar el filtro al perder el foco
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleSearch(); // Aplicar el filtro al presionar Enter
             }
           }}
         />
         <Button
-            size="sm"
-            variant="outlined"
-            color="neutral"
-            sx={{ alignSelf: 'center' }}
-            onClick={clearSearch}
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          sx={{ alignSelf: "center", cursor: "pointer" }}
+          onClick={clearSearch}
         >
-          Clear
+          Clear filter
         </Button>
         <IconButton
           size="sm"
           variant="outlined"
           color="neutral"
-          sx={{ display: { xs: 'inline-flex', sm: 'none' }, alignSelf: 'center' }}
+          sx={{
+            display: { xs: "inline-flex", sm: "none" },
+            alignSelf: "center",
+            cursor: "pointer"
+          }}
         >
           <SearchRoundedIcon />
         </IconButton>
@@ -232,33 +243,43 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
           <MenuButton
             variant="plain"
             size="sm"
-            sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}
+            sx={{
+              maxWidth: "32px",
+              maxHeight: "32px",
+              borderRadius: "9999999px",
+            }}
           >
             <Avatar
-              src={'https://placehold.co/155x232/f6f8fa/black?text=' + userLogged.name[0]}
-              sx={{ maxWidth: '32px', maxHeight: '32px' }}
+              src={
+                "https://placehold.co/155x232/f6f8fa/black?text=" +
+                userLogged.name[0]
+              }
+              sx={{ maxWidth: "32px", maxHeight: "32px" }}
             />
           </MenuButton>
           <Menu
             placement="bottom-end"
             size="sm"
             sx={{
-              zIndex: '99999',
+              zIndex: "99999",
               p: 1,
               gap: 1,
-              '--ListItem-radius': 'var(--joy-radius-sm)',
+              "--ListItem-radius": "var(--joy-radius-sm)",
             }}
           >
             <MenuItem>
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: "flex",
+                  alignItems: "center",
                 }}
               >
                 <Avatar
-                  src={'https://placehold.co/155x232/f6f8fa/black?text=' + userLogged.name[0]}
-                  sx={{ borderRadius: '50%' }}
+                  src={
+                    "https://placehold.co/155x232/f6f8fa/black?text=" +
+                    userLogged.name[0]
+                  }
+                  sx={{ borderRadius: "50%" }}
                 />
                 <Box sx={{ ml: 1.5 }}>
                   <Typography level="title-sm" textColor="text.primary">
@@ -290,3 +311,5 @@ export default function ({setUpdateGetMessages, updateGetMessages, setSelectedIt
     </Box>
   );
 }
+
+export {Header}
