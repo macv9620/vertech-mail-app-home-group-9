@@ -234,6 +234,9 @@ export default function Login() {
               <Typography level="body-xs" textAlign="center">
                 © Ver Tech+ Mail {new Date().getFullYear()}
               </Typography>
+              <Typography level="body-xs" textAlign="center">
+                v.1.0.1
+              </Typography>
             </Box>
           </Box>
         </Box>
