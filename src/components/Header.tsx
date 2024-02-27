@@ -90,8 +90,8 @@ const Header =  ({
   >(null);
 
   React.useEffect(() => {
-    setMessagesInfoOrigin(messagesInfoOrigin ?? messagesInfo);
-  }, [messagesInfo, messagesInfoOrigin]);
+    setMessagesInfoOrigin(messagesInfo);
+  }, [messagesInfo]);
 
   // React.useEffect(()=> {
   //   clearSearch()
@@ -107,24 +107,31 @@ const Header =  ({
   };
 
   const handleSearch = () => {
-    if (messagesInfoOrigin) {
+
+    console.log("Mensajes iniciales")
+    console.log(messagesInfo)
+
+    if (messagesInfoOrigin && searchTerm !== "") {
+
       let filteredMessages = [...messagesInfoOrigin];
       if (selectedItem === "inbox") {
+        console.log("Inbox")
+        console.log(filteredMessages)
         filteredMessages = filteredMessages.filter(
           (message) =>
-            message.to_user === userAuthEmail &&
             (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
               message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
       } else if (selectedItem === "sent") {
+        console.log("Sent")
+        console.log(filteredMessages)
         console.log(userAuthEmail)
         console.log(filteredMessages)
 
         filteredMessages = filteredMessages.filter(
           (message) =>
-            message.to_user === userAuthEmail &&
             (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
+              message.to_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         console.log(filteredMessages)
@@ -198,7 +205,11 @@ const Header =  ({
           size="sm"
           variant="outlined"
           placeholder="Filter by email or subject"
-          startDecorator={<SearchRoundedIcon sx={{cursor: "pointer"}} color="primary" />}
+          startDecorator={
+            <Button onClick={handleSearch} sx={{bgcolor: "white", width: "20px"}}>
+              <SearchRoundedIcon sx={{cursor: "pointer"}} color="primary"/>
+            </Button>
+            }
           sx={{
             alignSelf: "center",
             display: {
@@ -209,7 +220,7 @@ const Header =  ({
           }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onBlur={handleSearch} // Aplicar el filtro al perder el foco
+          // onBlur={handleSearch} // Aplicar el filtro al perder el foco
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSearch(); // Aplicar el filtro al presionar Enter
