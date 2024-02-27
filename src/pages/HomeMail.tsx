@@ -24,17 +24,25 @@ import Snackbar from "@mui/joy/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContextProvider";
 import { getUserMessages } from "../services/getUserMessages";
+import { LinearProgress } from "@mui/joy";
 
 const HomeMail = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState<boolean>(false);
-  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null);
-  const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
+  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(
+    null
+  );
+  const [selectedMessage, setSelectedMessage] =
+    React.useState<IMessageInfo | null>(null);
   const { setUserLogged } = useAuthContext();
-  const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
-  const [userAuthEmail, setUserEmailstring] = React.useState<string>('null');
+  const [updateGetMessages, setUpdateGetMessages] =
+    React.useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = React.useState<string>("inbox");
+  const [userAuthEmail, setUserEmailstring] = React.useState<string>("null");
   const [searchTerm, setSearchTerm] = React.useState<string>("");
+
+  //Control loading animation
+  const [showLoading, setShowLoading] = React.useState<boolean>(false);
 
   const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
     success: true,
@@ -53,7 +61,7 @@ const HomeMail = () => {
     if (authenticatedUser) {
       try {
         const loggedUserObject: IAuthenticatedUser =
-          JSON.parse(authenticatedUser);
+        JSON.parse(authenticatedUser);
         userAuthEmail = loggedUserObject.email;
         setUserEmailstring(userAuthEmail);
         setUserLogged(loggedUserObject);
@@ -64,26 +72,54 @@ const HomeMail = () => {
       navigate("/");
     }
 
-    getUserMessages(userAuthEmail).then((res) => {
-      console.log(res);
-      const messages:IMessageInfo[] = res.data?.sort(
-        (messageA: IMessageInfo, messageB: IMessageInfo) =>
-          messageB.message_id - messageA.message_id
-      );
-      // Filter messages based on selected item
-      if (selectedItem === 'inbox') {
-        setMessagesInfo(messages?.filter(message => message.to_user === userAuthEmail));
-      } else if (selectedItem === 'sent') {
-        setMessagesInfo(messages?.filter(message => message.from_user === userAuthEmail));
-      } else {
-        setMessagesInfo(messages);
-      }
-    });
-  }, [updateGetMessages, selectedItem]);
+    const fetchMessages = () => {
+      setShowLoading(true)
+      getUserMessages(userAuthEmail).then((res) => {
+        console.log(res);
+        const messages: IMessageInfo[] = res.data?.sort(
+          (messageA: IMessageInfo, messageB: IMessageInfo) =>
+            messageB.message_id - messageA.message_id
+        );
+        // Filter messages based on selected item
+        if (selectedItem === "inbox") {
+          setMessagesInfo(
+            messages?.filter((message) => message.to_user === userAuthEmail)
+          );
+        } else if (selectedItem === "sent") {
+          setMessagesInfo(
+            messages?.filter((message) => message.from_user === userAuthEmail)
+          );
+        } else {
+          setMessagesInfo(messages);
+        }
+      setShowLoading(false)
+      })
+      .catch(e => {
+        console.log(e)
+      setShowLoading(false)
+      });
+    }
 
+    fetchMessages()
+
+
+  }, [updateGetMessages, selectedItem]);
 
   return (
     <>
+      {showLoading && (
+        <Box sx={{ width: "20px" }}>
+          <LinearProgress
+            sx={{ position: "fixed", zIndex: 10000, width: "100vw" }}
+            color="success"
+            determinate={false}
+            size="sm"
+            value={25}
+            variant="solid"
+          />
+        </Box>
+      )}
+
       <CssVarsProvider disableTransitionOnChange>
         <CssBaseline />
         <Stack
@@ -146,10 +182,26 @@ const HomeMail = () => {
           }}
         >
           <Layout.Header>
-            <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} userAuthEmail={userAuthEmail} setUpdateGetMessages={setUpdateGetMessages} updateGetMessages={updateGetMessages} selectedItem={selectedItem} setSelectedItem={setSelectedItem} messagesInfo={messagesInfo} setMessagesInfo={setMessagesInfo}/>
+            <Header
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              userAuthEmail={userAuthEmail}
+              setUpdateGetMessages={setUpdateGetMessages}
+              updateGetMessages={updateGetMessages}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+              messagesInfo={messagesInfo}
+              setMessagesInfo={setMessagesInfo}
+            />
           </Layout.Header>
           <Layout.SideNav>
-            <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} setSearchTerm={setSearchTerm} setUpdateGetMessages={setUpdateGetMessages} updateGetMessages={updateGetMessages}/>
+            <Navigation
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+              setSearchTerm={setSearchTerm}
+              setUpdateGetMessages={setUpdateGetMessages}
+              updateGetMessages={updateGetMessages}
+            />
           </Layout.SideNav>
           <Layout.SidePane>
             <Box
@@ -201,6 +253,8 @@ const HomeMail = () => {
                   setOpen={setOpen}
                   openSnackbar={openSnackbar}
                   setOpenSnackbar={setOpenSnackbar}
+                  setShowLoading={setShowLoading}
+                  
                 />
               </FocusTrap>
             </Box>

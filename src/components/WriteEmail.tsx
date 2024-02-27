@@ -24,12 +24,13 @@ interface WriteEmailProps {
   openSnackbar: ISnackbarOpen;
   setOpenSnackbar: React.Dispatch<React.SetStateAction<ISnackbarOpen>>;
   setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
-  updateGetMessages: boolean
+  updateGetMessages: boolean;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
   function WriteEmail(
-    { open, onClose, setOpen, setOpenSnackbar, updateGetMessages, setUpdateGetMessages },
+    { open, onClose, setOpen, setOpenSnackbar, updateGetMessages, setUpdateGetMessages, setShowLoading },
     ref
   ) {
     const [toUser, setToUser] = React.useState<string>("");
@@ -82,6 +83,7 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
     };
 
     const hadleSubmit: React.MouseEventHandler<HTMLAnchorElement> = () => {
+      setShowLoading(true)
       const data: IPostMessageData = {
         from_user: userLogged.email,
         to_user: toUser,
@@ -100,6 +102,8 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
           setToUser("");
           setSubject("");
           setUpdateGetMessages(!updateGetMessages)
+          setShowLoading(false)
+
         })
         .catch((e) => {
           console.log(e);
@@ -113,6 +117,8 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
           } else if (e.code == "ERR_NETWORK") {
             handleSnackbarOpen("Can not connect to server", false);
           }
+         setShowLoading(false)
+
         });
 
       console.log(data);
