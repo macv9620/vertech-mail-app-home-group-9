@@ -61,14 +61,27 @@ function ColorSchemeToggle() {
 }
 
 type Propos = {
-  selectedItem: string,
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>
-}
+  updateGetMessages: boolean;
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedItem: string;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  messagesInfo: IMessageInfo[] | null;
+  setMessagesInfo: React.Dispatch<React.SetStateAction<IMessageInfo[] | null>>;
+  userAuthEmail: string;
+};
 
-export default function ({setSelectedItem, selectedItem}: Propos) {
+
+export default function ({setUpdateGetMessages, updateGetMessages, setSelectedItem, selectedItem, messagesInfo, setMessagesInfo, userAuthEmail}: Propos) {
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
   const [open, setOpen] = React.useState(false);
-  const {userLogged, setUserLogged} = useAuthContext()
-  const navigate = useNavigate()
+  const {userLogged, setUserLogged} = useAuthContext();
+  const navigate = useNavigate();
+  const [messagesInfoOrigin, setMessagesInfoOrigin] = React.useState<IMessageInfo[] | null>(null);
+
+  React.useEffect(() => {
+    setMessagesInfoOrigin(messagesInfoOrigin ?? messagesInfo);
+  }, [messagesInfo, messagesInfoOrigin]);
+
 
   const logout = () => {
     sessionStorage.clear()
@@ -78,6 +91,31 @@ export default function ({setSelectedItem, selectedItem}: Propos) {
     })
     navigate('/')
   }
+
+  const handleSearch = () => {
+    if (messagesInfoOrigin) {
+      let filteredMessages = [...messagesInfoOrigin];
+      if (selectedItem === 'inbox') {
+        filteredMessages = filteredMessages.filter(message => message.to_user === userAuthEmail);
+      } else if (selectedItem === 'sent') {
+        filteredMessages = filteredMessages.filter(message => message.from_user === userAuthEmail);
+      }
+      if (searchTerm.trim() !== "") {
+        filteredMessages = filteredMessages.filter(
+            message =>
+                message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                message.from_user.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      setMessagesInfo(filteredMessages);
+    }
+  };
+
+
+  const clearSearch = () => {
+    setSearchTerm('');
+    setUpdateGetMessages(!updateGetMessages);
+  };
 
   return (
     <Box
@@ -162,7 +200,24 @@ export default function ({setSelectedItem, selectedItem}: Propos) {
               sm: 'flex',
             },
           }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onBlur={handleSearch} // Aplicar el filtro al perder el foco
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch(); // Aplicar el filtro al presionar Enter
+            }
+          }}
         />
+        <Button
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            sx={{ alignSelf: 'center' }}
+            onClick={clearSearch}
+        >
+          Clear
+        </Button>
         <IconButton
           size="sm"
           variant="outlined"

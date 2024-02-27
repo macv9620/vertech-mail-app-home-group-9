@@ -33,7 +33,8 @@ const HomeMail = () => {
   const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
   const { setUserLogged } = useAuthContext();
   const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
+  const [selectedItem, setSelectedItem] = React.useState<string>('inbox');
+  const [userAuthEmail, setUserEmailstring] = React.useState<string>('null');
 
   const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
     success: true,
@@ -54,6 +55,7 @@ const HomeMail = () => {
         const loggedUserObject: IAuthenticatedUser =
           JSON.parse(authenticatedUser);
         userAuthEmail = loggedUserObject.email;
+        setUserEmailstring(userAuthEmail);
         setUserLogged(loggedUserObject);
       } catch (error) {
         console.error("Error parsing loggedUser from sessionStorage:", error);
@@ -78,6 +80,7 @@ const HomeMail = () => {
       }
     });
   }, [updateGetMessages, selectedItem]);
+
 
   return (
     <>
@@ -148,7 +151,7 @@ const HomeMail = () => {
           }}
         >
           <Layout.Header>
-            <Header selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+            <Header userAuthEmail={userAuthEmail} setUpdateGetMessages={setUpdateGetMessages} updateGetMessages={updateGetMessages} selectedItem={selectedItem} setSelectedItem={setSelectedItem} messagesInfo={messagesInfo} setMessagesInfo={setMessagesInfo}/>
           </Layout.Header>
           <Layout.SideNav>
             <Navigation selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
