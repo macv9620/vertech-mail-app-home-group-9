@@ -33,10 +33,10 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: home9/email_app_repository
-  ECS_SERVICE: email_app_service
-  ECS_CLUSTER: email_app_cluster_2
-  ECS_TASK_DEFINITION: .github/workflows/email_app_task_definition-revision1.json
-  CONTAINER_NAME: front_email_app
+  ECS_SERVICE: front_email_app_service
+  ECS_CLUSTER: email_app_home_9
+  ECS_TASK_DEFINITION: .github/workflows/email_app_task_definition_front-revision1.json
+  CONTAINER_NAME: front_email_app_container
 
 jobs:
   deploy:

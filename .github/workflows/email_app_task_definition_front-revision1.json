@@ -1,15 +1,15 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:637423626700:task-definition/email_app_task_definition:14",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:637423626700:task-definition/email_app_task_definition_front:1",
     "containerDefinitions": [
         {
-            "name": "front_email_app",
-            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository:c775dba09f17eb8cca970785aec59e533f7aaea6",
+            "name": "front_email_app_container",
+            "image": "637423626700.dkr.ecr.us-east-1.amazonaws.com/home9/email_app_repository",
             "cpu": 0,
             "memory": 1024,
             "memoryReservation": 1024,
             "portMappings": [
                 {
-                    "name": "front_email_app-80-tcp",
+                    "name": "front_email_app_container-80-tcp",
                     "containerPort": 80,
                     "hostPort": 80,
                     "protocol": "tcp",
@@ -18,13 +18,15 @@
             ],
             "essential": true,
             "environment": [],
+            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
+            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-create-group": "true",
-                    "awslogs-group": "/ecs/email_app_task_definition",
+                    "awslogs-group": "/ecs/email_app_task_definition_front",
                     "awslogs-region": "us-east-1",
                     "awslogs-stream-prefix": "ecs"
                 },
@@ -32,11 +34,11 @@
             }
         }
     ],
-    "family": "email_app_task_definition",
+    "family": "email_app_task_definition_front",
     "taskRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::637423626700:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 14,
+    "revision": 1,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -85,7 +87,12 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-02-25T19:34:44.836Z",
+    "registeredAt": "2024-02-27T01:13:39.068Z",
     "registeredBy": "arn:aws:iam::637423626700:user/mateo_vasco",
-    "tags": []
+    "tags": [
+        {
+            "key": "group",
+            "value": "home_group_9"
+        }
+    ]
 }
