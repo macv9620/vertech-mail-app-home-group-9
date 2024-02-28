@@ -13,12 +13,20 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ForwardToInboxRoundedIcon from "@mui/icons-material/ForwardToInboxRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
 
 type Props = {
   selectedMessage: IMessageInfo | null;
+  categoriesInfo: IUserCategoryInfo[] | null;
+  selectedItem: string
 };
 
-export default function EmailContent({ selectedMessage }: Props): JSX.Element {
+export default function EmailContent({
+  selectedMessage,
+  categoriesInfo,
+  selectedItem
+}: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
 
   const handleSnackbarOpen = (index: number) => {
@@ -181,22 +189,28 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                 alignItems: "start",
               }}
             >
-              <Typography
-                level="title-lg"
-                textColor="text.primary"
-                endDecorator={
-                  <Chip
-                    component="span"
+              <Box sx={{ display: "flex", gap: "10px", width: "100%" }}>
+                <Typography level="title-lg" textColor="text.primary">
+                  {selectedMessage?.subject}
+                </Typography>
+                {selectedItem === "inbox" && (
+                  <Select
                     size="sm"
-                    variant="outlined"
-                    color="warning"
+                    color="danger"
+                    placeholder="Select category"
                   >
-                    Personal
-                  </Chip>
-                }
-              >
-                {selectedMessage?.subject}
-              </Typography>
+                    {categoriesInfo?.map((category) => (
+                      <Option
+                        key={category.category_id}
+                        value={category.category_id}
+                      >
+                        {category.category_name}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              </Box>
+
               <Box
                 sx={{
                   mt: 1,

@@ -24,6 +24,8 @@ type Propos = {
   categoriesInfo: IUserCategoryInfo[] | null;
   userLogged: IAuthenticatedUser;
   setShowLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>
+
 };
 
 export default function Navigation({
@@ -34,7 +36,9 @@ export default function Navigation({
   updateGetMessages,
   categoriesInfo,
   userLogged,
-  setShowLoading
+  setShowLoading,
+  setSelectedMessage
+
 }: Propos) {
 
   const [newCategoryName, setNewCategoryName] = React.useState<string>('');
@@ -97,6 +101,8 @@ export default function Navigation({
     // console.log(clearSearch)
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
+    setSelectedMessage(null)
+
     // clearSearch()
   };
 
@@ -104,6 +110,7 @@ export default function Navigation({
     setSelectedItem("sent");
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
+    setSelectedMessage(null)
     // clearSearch()
   };
 

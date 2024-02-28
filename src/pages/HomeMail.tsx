@@ -258,6 +258,7 @@ const HomeMail = () => {
               categoriesInfo={categoriesInfo}
               userLogged={userLogged}
               setShowLoading={setShowLoading}
+              setSelectedMessage={setSelectedMessage}
             />
           </Layout.SideNav>
           <Layout.SidePane>
@@ -320,7 +321,7 @@ const HomeMail = () => {
             />
           </Layout.SidePane>
           <Layout.Main>
-            <EmailContent selectedMessage={selectedMessage} />
+            <EmailContent selectedMessage={selectedMessage} categoriesInfo={categoriesInfo} selectedItem={selectedItem}/>
           </Layout.Main>
         </Layout.Root>
       </CssVarsProvider>
