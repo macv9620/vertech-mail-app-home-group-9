@@ -142,7 +142,6 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                   Your message has been forwarded.
                 </Snackbar>
                 <Button
-                  disabled
                   size="sm"
                   variant="plain"
                   color="danger"
