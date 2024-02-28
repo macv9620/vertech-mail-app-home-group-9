@@ -17,7 +17,7 @@ import { useAuthContext } from "../context/AuthContextProvider";
 import { postMessage } from "../services/postMessage";
 // import Snackbar from "@mui/joy/Snackbar";
 
-interface WriteEmailProps {
+export interface WriteEmailProps {
   open?: boolean;
   onClose?: () => void;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;

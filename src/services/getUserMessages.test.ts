@@ -1,0 +1,28 @@
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import '@testing-library/jest-dom'
+import { afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+
+import axios from 'axios';
+import { getUserMessages } from './getUserMessages';
+
+vi.mock('axios');
+
+describe('getUserMessages', () => {
+  it('should make a GET request to the correct URL with the provided email', async () => {
+    const BASE_URL = import.meta.env.VITE_BASE_URL_FOREST_SERVICE
+    const ENDPOINT = '/messages/getAll?mail='
+    const email = 'test@example.com';
+    const expectedUrl = BASE_URL + ENDPOINT + email;
+
+    await getUserMessages(email);
+
+    expect(axios.request).toHaveBeenCalledWith({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: expectedUrl,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  });
+});
