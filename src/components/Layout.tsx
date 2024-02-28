@@ -113,7 +113,7 @@ function Main(props: BoxProps) {
   );
 }
 
-function SideDrawer(
+export function SideDrawer(
   props: BoxProps & { onClose: React.MouseEventHandler<HTMLDivElement> },
 ) {
   const { onClose, ...other } = props;
