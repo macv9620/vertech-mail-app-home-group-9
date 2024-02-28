@@ -25,16 +25,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContextProvider";
 import { getUserMessages } from "../services/getUserMessages";
 import { LinearProgress } from "@mui/joy";
+import { getUserCategories } from "../services/categories/getCategories";
 
 const HomeMail = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState<boolean>(false);
+
   const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(
     null
   );
+  const [categoriesInfo, setCategoriesInfo] = React.useState<
+    IUserCategoryInfo[] | null
+  >(null);
+
   const [selectedMessage, setSelectedMessage] =
     React.useState<IMessageInfo | null>(null);
-  const { setUserLogged } = useAuthContext();
+  const { userLogged, setUserLogged } = useAuthContext();
   const [updateGetMessages, setUpdateGetMessages] =
     React.useState<boolean>(false);
   const [selectedItem, setSelectedItem] = React.useState<string>("inbox");
@@ -61,7 +67,7 @@ const HomeMail = () => {
     if (authenticatedUser) {
       try {
         const loggedUserObject: IAuthenticatedUser =
-        JSON.parse(authenticatedUser);
+          JSON.parse(authenticatedUser);
         userAuthEmail = loggedUserObject.email;
         setUserEmailstring(userAuthEmail);
         setUserLogged(loggedUserObject);
@@ -72,37 +78,85 @@ const HomeMail = () => {
       navigate("/");
     }
 
+    //Get user messages
     const fetchMessages = () => {
-      setShowLoading(true)
-      getUserMessages(userAuthEmail).then((res) => {
-        console.log(res);
-        const messages: IMessageInfo[] = res.data?.sort(
-          (messageA: IMessageInfo, messageB: IMessageInfo) =>
-            messageB.message_id - messageA.message_id
-        );
-        // Filter messages based on selected item
-        if (selectedItem === "inbox") {
-          setMessagesInfo(
-            messages?.filter((message) => message.to_user === userAuthEmail)
+      setShowLoading(true);
+      getUserMessages(userAuthEmail)
+        .then((res) => {
+          console.log(res);
+          const messages: IMessageInfo[] = res.data?.sort(
+            (messageA: IMessageInfo, messageB: IMessageInfo) =>
+              messageB.message_id - messageA.message_id
           );
-        } else if (selectedItem === "sent") {
-          setMessagesInfo(
-            messages?.filter((message) => message.from_user === userAuthEmail)
-          );
-        } else {
-          setMessagesInfo(messages);
-        }
-      setShowLoading(false)
+          // Filter messages based on selected item
+          if (selectedItem === "inbox") {
+            setMessagesInfo(
+              messages?.filter((message) => message.to_user === userAuthEmail)
+            );
+          } else if (selectedItem === "sent") {
+            setMessagesInfo(
+              messages?.filter((message) => message.from_user === userAuthEmail)
+            );
+          } else {
+            setMessagesInfo(messages);
+          }
+          setShowLoading(false);
+        })
+        .catch((e) => {
+          console.log(e);
+          setShowLoading(false);
+        });
+    };
+
+    //Get user categories
+    const fetchUserCategories = () => {
+      // const colors: string[] = [
+      //   "#ffeb3b",
+      //   "#651fff",
+      //   "#1de9b6",
+      //   "#9c27b0",
+      //   "#9575cd",
+      //   "#00897b",
+      //   "#c2185b",
+      //   "#ef6c00",
+      //   "#455a64",
+      //   "#00e5ff",
+      //   "#b2dfdb",
+      //   "#cddc39",
+      //   "#ff9e80"
+
+      // ]
+      // const data: IUserCategoryInfo[] = [
+      //   {
+      //     category_id: 0,
+      //     category_name: "Personal",
+      //     color: colors[Math.floor(Math.random() * 11)],
+      //   },
+      //   {
+      //     category_id: 4,
+      //     category_name: "Work",
+      //     color: colors[Math.floor(Math.random() * 11)],
+      //   },
+      //   {
+      //     category_id: 9,
+      //     category_name: "Gym",
+      //     color: colors[Math.floor(Math.random() * 11)],
+      //   },
+      // ];
+      getUserCategories(userAuthEmail)
+      .then(res => {
+        setCategoriesInfo(res.data)
       })
       .catch(e => {
         console.log(e)
-      setShowLoading(false)
-      });
-    }
-
-    fetchMessages()
+      })
 
 
+      
+    };
+
+    fetchMessages();
+    fetchUserCategories();
   }, [updateGetMessages, selectedItem]);
 
   return (
@@ -201,6 +255,9 @@ const HomeMail = () => {
               setSearchTerm={setSearchTerm}
               setUpdateGetMessages={setUpdateGetMessages}
               updateGetMessages={updateGetMessages}
+              categoriesInfo={categoriesInfo}
+              userLogged={userLogged}
+              setShowLoading={setShowLoading}
             />
           </Layout.SideNav>
           <Layout.SidePane>
@@ -254,7 +311,6 @@ const HomeMail = () => {
                   openSnackbar={openSnackbar}
                   setOpenSnackbar={setOpenSnackbar}
                   setShowLoading={setShowLoading}
-                  
                 />
               </FocusTrap>
             </Box>

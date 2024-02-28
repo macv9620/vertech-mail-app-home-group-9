@@ -1,57 +1,122 @@
-import Box from '@mui/joy/Box';
-import List from '@mui/joy/List';
-import ListSubheader from '@mui/joy/ListSubheader';
-import ListItem from '@mui/joy/ListItem';
-import ListItemButton from '@mui/joy/ListItemButton';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import ListItemContent from '@mui/joy/ListItemContent';
+import Box from "@mui/joy/Box";
+import List from "@mui/joy/List";
+import ListSubheader from "@mui/joy/ListSubheader";
+import ListItem from "@mui/joy/ListItem";
+import ListItemButton from "@mui/joy/ListItemButton";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import ListItemContent from "@mui/joy/ListItemContent";
 
-import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
-import OutboxRoundedIcon from '@mui/icons-material/OutboxRounded';
-import DraftsRoundedIcon from '@mui/icons-material/DraftsRounded';
-import AssistantPhotoRoundedIcon from '@mui/icons-material/AssistantPhotoRounded';
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import React from 'react';
+import InboxRoundedIcon from "@mui/icons-material/InboxRounded";
+import OutboxRoundedIcon from "@mui/icons-material/OutboxRounded";
+import React from "react";
+import { Button, Input, Stack } from "@mui/joy";
+import { postUserCategory } from "../services/categories/createCategory";
 
 type ClearSearchFunction = () => void;
 
 type Propos = {
-  selectedItem: string,
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>,
-  clearSearch?: ClearSearchFunction
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>,
-  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>,
-  updateGetMessages: boolean
-}
+  selectedItem: string;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  clearSearch?: ClearSearchFunction;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  updateGetMessages: boolean;
+  categoriesInfo: IUserCategoryInfo[] | null;
+  userLogged: IAuthenticatedUser;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>
+};
 
-export default function Navigation({selectedItem, setSelectedItem, setSearchTerm, setUpdateGetMessages, updateGetMessages}: Propos) {
+export default function Navigation({
+  selectedItem,
+  setSelectedItem,
+  setSearchTerm,
+  setUpdateGetMessages,
+  updateGetMessages,
+  categoriesInfo,
+  userLogged,
+  setShowLoading
+}: Propos) {
 
-  const filterByInbox = () =>{
-    setSelectedItem('inbox')
+  const [newCategoryName, setNewCategoryName] = React.useState<string>('');
+
+  function toTitleCase(str: string): string {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  const handleCategorySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setShowLoading(true)
+    event.preventDefault();
+
+    const colors: string[] = [
+      "#9575cd",
+      "#651fff",
+      "#455a64",
+      "#ff3d00",
+      "#c2185b",
+      "#1de9b6",
+      "#9c27b0",
+      "#00897b",
+      "#ff9e80",
+      "#e65100",
+      "#ef6c00",
+      "#00e5ff",
+      "#b2dfdb",
+      "#cddc39",
+      "#ffeb3b",
+
+    ]
+    
+    // Create an object with the input value
+    const categoryObject = {
+      category_name: toTitleCase(newCategoryName),
+      color: colors[Math.floor(Math.random() * 11)],
+      email: userLogged.email
+    };
+
+    // Now you can do something with the categoryObject
+    postUserCategory(categoryObject)
+      .then(res => {
+        console.log(res)
+        setShowLoading(false)
+        setUpdateGetMessages(!updateGetMessages)
+      })
+      .catch(e => {
+        console.log(e)
+        setShowLoading(false)
+      })
+
+    setNewCategoryName('')
+  };
+
+
+
+  const filterByInbox = () => {
+    setSelectedItem("inbox");
     // console.log(clearSearch)
-    setSearchTerm("")
-    setUpdateGetMessages(!updateGetMessages)
+    setSearchTerm("");
+    setUpdateGetMessages(!updateGetMessages);
     // clearSearch()
-  }
+  };
 
-  const filterBySent = () =>{
-    setSelectedItem('sent')
-    setSearchTerm("")
-    setUpdateGetMessages(!updateGetMessages)
+  const filterBySent = () => {
+    setSelectedItem("sent");
+    setSearchTerm("");
+    setUpdateGetMessages(!updateGetMessages);
     // clearSearch()
-  }
-
+  };
 
   return (
-    <List size="sm" sx={{ '--ListItem-radius': '8px', '--List-gap': '4px' }}>
+    <List size="sm" sx={{ "--ListItem-radius": "8px", "--List-gap": "4px" }}>
       <ListItem nested>
-        <ListSubheader sx={{ letterSpacing: '2px', fontWeight: '800' }}>
+        <ListSubheader sx={{ letterSpacing: "2px", fontWeight: "800" }}>
           Browse
         </ListSubheader>
         <List aria-labelledby="nav-list-browse">
-        <ListItem>
+          <ListItem>
             <ListItemButton
-              selected={selectedItem === 'inbox'}
+              selected={selectedItem === "inbox"}
               onClick={filterByInbox}
             >
               <ListItemDecorator>
@@ -62,7 +127,7 @@ export default function Navigation({selectedItem, setSelectedItem, setSearchTerm
           </ListItem>
           <ListItem>
             <ListItemButton
-              selected={selectedItem === 'sent'}
+              selected={selectedItem === "sent"}
               onClick={filterBySent}
             >
               <ListItemDecorator>
@@ -71,104 +136,51 @@ export default function Navigation({selectedItem, setSelectedItem, setSearchTerm
               <ListItemContent>Sent</ListItemContent>
             </ListItemButton>
           </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <DraftsRoundedIcon fontSize="small" />
-              </ListItemDecorator>
-              <ListItemContent>Draft</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <AssistantPhotoRoundedIcon fontSize="small" />
-              </ListItemDecorator>
-              <ListItemContent>Flagged</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <DeleteRoundedIcon fontSize="small" />
-              </ListItemDecorator>
-              <ListItemContent>Trash</ListItemContent>
-            </ListItemButton>
-          </ListItem>
         </List>
       </ListItem>
       <ListItem nested sx={{ mt: 2 }}>
-        <ListSubheader sx={{ letterSpacing: '2px', fontWeight: '800' }}>
+        <ListSubheader sx={{ letterSpacing: "2px", fontWeight: "800" }}>
           Categories
         </ListSubheader>
         <List
           aria-labelledby="nav-list-tags"
           size="sm"
           sx={{
-            '--ListItemDecorator-size': '32px',
+            "--ListItemDecorator-size": "32px",
           }}
         >
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <Box
-                  sx={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '99px',
-                    bgcolor: 'primary.500',
-                  }}
-                />
-              </ListItemDecorator>
-              <ListItemContent>Personal</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <Box
-                  sx={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '99px',
-                    bgcolor: 'danger.500',
-                  }}
-                />
-              </ListItemDecorator>
-              <ListItemContent>Work</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <Box
-                  sx={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '99px',
-                    bgcolor: 'warning.400',
-                  }}
-                />
-              </ListItemDecorator>
-              <ListItemContent>Travels</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton disabled>
-              <ListItemDecorator>
-                <Box
-                  sx={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '99px',
-                    bgcolor: 'success.400',
-                  }}
-                />
-              </ListItemDecorator>
-              <ListItemContent>Concert tickets</ListItemContent>
-            </ListItemButton>
-          </ListItem>
+          {categoriesInfo?.map((category) => (
+            <ListItem key={category.category_id}>
+              <ListItemButton>
+                <ListItemDecorator>
+                  <Box
+                    sx={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "99px",
+                      bgcolor: category.color,
+                    }}
+                  />
+                </ListItemDecorator>
+                <ListItemContent>{category.category_name}</ListItemContent>
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
+        <form onSubmit={handleCategorySubmit}>
+          <Stack spacing={1}>
+            <Input
+              size="sm"
+              placeholder="Type your category name"
+              required
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)} // Update the categoryName state
+            />
+            <Button size="sm" type="submit">
+              Create category
+            </Button>
+          </Stack>
+        </form>
       </ListItem>
     </List>
   );

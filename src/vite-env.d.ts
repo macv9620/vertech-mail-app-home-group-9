@@ -36,3 +36,15 @@ interface IPostMessageData {
   from_user: string
   category_id: number
 }
+
+interface IUserCategoryInfo {
+  category_id: number,
+  category_name: string,
+  color: string
+}
+
+interface IUserPostCategory {
+  email: string,
+  category_name: string,
+  color: string
+}
