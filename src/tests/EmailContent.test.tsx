@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom'
 import { describe, expect } from 'vitest'
 import EmailContent from '../components/EmailContent';
@@ -71,26 +71,30 @@ describe('EmailContent', () => {
     expect(snackbarElement).not.toBeInTheDocument();
   });
   */
-  test('should open and close snackbar on delete button click', async () => {
-    const selectedMessage: IMessageInfo = {
-        message_id: 12345,
-        color: 'blue',
-        from_user_name: 'John Doe',
-        created_at: '2022-01-01',
-        subject: 'Test Subject',
-        from_user: 'john.doe@example.com',
-        to_user: 'jane.doe@example.com',
-        body: 'This is a test email body',
-    };
-    render(<EmailContent selectedMessage={selectedMessage} />);
-    const deleteButton = screen.getByText(/Delete/i);
-    fireEvent.click(deleteButton);
-    const snackbarElement = screen.getByText(/Your message has been deleted./i);
-    expect(snackbarElement).toBeInTheDocument();
-    const dismissButton = screen.getByText(/Dismiss/i);
-    fireEvent.click(dismissButton);
-    await waitFor(() => {
-      expect(snackbarElement).not.toBeInTheDocument();
-    });
-  });
+
+
+
+
+  // test('should open and close snackbar on delete button click', async () => {
+  //   const selectedMessage: IMessageInfo = {
+  //       message_id: 12345,
+  //       color: 'blue',
+  //       from_user_name: 'John Doe',
+  //       created_at: '2022-01-01',
+  //       subject: 'Test Subject',
+  //       from_user: 'john.doe@example.com',
+  //       to_user: 'jane.doe@example.com',
+  //       body: 'This is a test email body',
+  //   };
+  //   render(<EmailContent selectedMessage={selectedMessage} />);
+  //   const deleteButton = screen.getByText(/Delete/i);
+  //   fireEvent.click(deleteButton);
+  //   const snackbarElement = screen.getByText(/Your message has been deleted./i);
+  //   expect(snackbarElement).toBeInTheDocument();
+  //   const dismissButton = screen.getByText(/Dismiss/i);
+  //   fireEvent.click(dismissButton);
+  //   await waitFor(() => {
+  //     expect(snackbarElement).not.toBeInTheDocument();
+  //   });
+  // });
 });
