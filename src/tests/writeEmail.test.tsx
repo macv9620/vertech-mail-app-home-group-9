@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import { describe, expect, vi } from 'vitest'
 
 
-import WriteEmail, { WriteEmailProps } from "./WriteEmail";
+import WriteEmail, { WriteEmailProps } from "../components/WriteEmail";
 
 
 vi.mock('../services/postMessage', () => ({

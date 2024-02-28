@@ -1,9 +1,8 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom'
-import { afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import { describe, expect, it, vi} from 'vitest'
 
 import axios from 'axios';
-import { getUserMessages } from './getUserMessages';
+import { getUserMessages } from '../services/getUserMessages';
 
 vi.mock('axios');
 

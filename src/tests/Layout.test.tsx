@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import '@testing-library/jest-dom'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { SideDrawer } from './Layout';
+import { describe, expect, vi } from 'vitest'
+import { SideDrawer } from '../components/Layout';
 
 
 describe('SideDrawer', () => {

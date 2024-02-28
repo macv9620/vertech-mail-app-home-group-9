@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import '@testing-library/jest-dom'
 import { describe, expect, vi } from 'vitest'
-import Navigation from './Navigation';
+import Navigation from '../components/Navigation';
 
 
 

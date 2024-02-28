@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom'
 import { describe, expect } from 'vitest'
-import EmailContent from './EmailContent';
+import EmailContent from '../components/EmailContent';
 
 
 describe('EmailContent', () => {
