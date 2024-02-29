@@ -78,7 +78,6 @@ const Header =  ({
   selectedItem,
   messagesInfo,
   setMessagesInfo,
-  userAuthEmail,
   setSearchTerm
 }: Propos) => {
 
@@ -108,25 +107,18 @@ const Header =  ({
 
   const handleSearch = () => {
 
-    console.log("Mensajes iniciales")
-    console.log(messagesInfo)
 
     if (messagesInfoOrigin && searchTerm !== "") {
 
       let filteredMessages = [...messagesInfoOrigin];
       if (selectedItem === "inbox") {
-        console.log("Inbox")
-        console.log(filteredMessages)
         filteredMessages = filteredMessages.filter(
           (message) =>
             (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
               message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
       } else if (selectedItem === "sent") {
-        console.log("Sent")
-        console.log(filteredMessages)
-        console.log(userAuthEmail)
-        console.log(filteredMessages)
+
 
         filteredMessages = filteredMessages.filter(
           (message) =>
@@ -134,14 +126,13 @@ const Header =  ({
               message.to_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
-        console.log(filteredMessages)
       }
       setMessagesInfo(filteredMessages);
     }
   };
 
   const clearSearch: ClearSearchFunction = () => {
-    console.log("Borro filtro")
+
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
   };

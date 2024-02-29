@@ -35,39 +35,37 @@ export default function EmailContent({
   selectedItem,
   updateGetMessages,
   setUpdateGetMessages,
+  showLoading
 }: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
   const [selectedOption, setSelectedOption] = React.useState<number>(0);
 
   React.useEffect(() => {
-    if (selectedMessage && selectedMessage.category_id) {
+
+    if(selectedMessage){
       setSelectedOption(selectedMessage.category_id);
-    } else {
-      setSelectedOption(0); // Reset to the initial value
     }
-  }, [selectedMessage]);
+
+  }, [selectedMessage, showLoading]);
 
   const handleSelectChange = (
     event: React.SyntheticEvent | null,
     newValue: number | null
   ) => {
-    setSelectedOption(newValue ?? 0);
+    // setSelectedOption(newValue ?? 0);
     const data: IUpdateMessageCategory = {
       message_id: selectedMessage?.message_id,
       category_id: newValue,
     };
 
-    console.log("data", data);
-
     updateCategoryMessage(data)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setUpdateGetMessages(!updateGetMessages);
       })
-      .catch((e) => console.log(e));
 
-    setSelectedOption(0);
-    console.log(event);
+      // if(newValue){
+      //   setSelectedOption(0);
+      // }
   };
 
   const handleSnackbarOpen = (index: number) => {

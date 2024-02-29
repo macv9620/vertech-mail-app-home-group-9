@@ -60,15 +60,16 @@ const HomeMail = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
 
-  React.useEffect(() => {
-    if (!showLoading && selectedMessage !== null) {
+  // React.useEffect(() => {
+  //   if (!showLoading && selectedMessage !== null) {
 
-      const updatedSelectedMessage = messagesInfo?.filter(messageInfo => messageInfo.message_id = selectedMessage.message_id)[0]
-      if(updatedSelectedMessage){
-        setSelectedMessage({ ...updatedSelectedMessage });
-      }
-    }
-  }, [showLoading]);
+      
+  //     const updatedSelectedMessage = messagesInfo?.filter(messageInfo => messageInfo.message_id = selectedMessage.message_id)[0]
+  //     if(updatedSelectedMessage){
+  //       setSelectedMessage({ ...updatedSelectedMessage });
+  //     }
+  //   }
+  // }, [showLoading]);
 
   React.useEffect(() => {
     let userAuthEmail = "";
@@ -93,7 +94,8 @@ const HomeMail = () => {
       setShowLoading(true);
       getUserMessages(userAuthEmail)
         .then((res) => {
-          console.log(res);
+          console.log(res)
+
           const messages: IMessageInfo[] = res.data?.sort(
             (messageA: IMessageInfo, messageB: IMessageInfo) =>
               messageB.message_id - messageA.message_id
@@ -111,9 +113,20 @@ const HomeMail = () => {
             setMessagesInfo(messages);
           }
           setShowLoading(false);
+
+
+          if (selectedMessage) {
+            console.log("Selected message", selectedMessage)
+            const updatedSelectedMessage = messages?.filter(messageInfo => messageInfo.message_id == selectedMessage.message_id)[0]
+            console.log(updatedSelectedMessage)
+            console.log("updatedSelectedMessage", updatedSelectedMessage)
+            if(updatedSelectedMessage){
+              setSelectedMessage({ ...updatedSelectedMessage });
+            }
+          }
+
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
           setShowLoading(false);
         });
     };
@@ -123,16 +136,12 @@ const HomeMail = () => {
       getUserCategories(userAuthEmail)
       .then(res => {
         const categories = res.data
-        console.log(categories)
         categories.unshift({
           category_id: 0,
           category_name: "No category",
           color: ""
       })
         setCategoriesInfo(categories)
-      })
-      .catch(e => {
-        console.log(e)
       })
 
 

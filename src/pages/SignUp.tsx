@@ -99,11 +99,9 @@ export default function SignUp() {
     postUser(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true)
-        console.log(res)
         navigation('/')
       })
       .catch((e) => {
-        console.log(e)
         if(e.response?.status === 400){
           handleSnackbarOpen(e.response.data.message? e.response.data.message:'Uncontrolled error', false)
         } else if(e.code == 'ERR_NETWORK') {

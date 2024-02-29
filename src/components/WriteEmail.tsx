@@ -94,8 +94,8 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
 
       postMessage(data)
         .then((res) => {
+
           handleSnackbarOpen(res.data.message, true);
-          console.log(res);
           setOpen(false);
 
           setBody("");
@@ -106,7 +106,6 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
 
         })
         .catch((e) => {
-          console.log(e);
           if (e.response?.status === 400) {
             handleSnackbarOpen(
               e.response.data.message
@@ -121,8 +120,6 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
 
         });
 
-      console.log(data);
-      // handleSnackbarOpen(1)
     };
 
     React.useEffect(() => {

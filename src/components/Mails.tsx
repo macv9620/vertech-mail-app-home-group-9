@@ -41,6 +41,7 @@ export default function EmailList({
                 })}
                 sx={{ p: 2 }}
                 onClick={() => {
+                  console.log(item)
                   setSelectedMessage(item);
                   setSelectedIndex(index);
                 }}

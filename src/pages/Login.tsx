@@ -90,12 +90,10 @@ export default function Login() {
     postLogin(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true);
-        console.log(res);
         sessionStorage.setItem('authenticatedUser', JSON.stringify(res.data.data))
         navigation("/home");
       })
       .catch((e) => {
-        console.log(e);
         if (e.response?.status === 401) {
           handleSnackbarOpen(
             e.response.data.message

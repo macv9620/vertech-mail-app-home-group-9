@@ -83,13 +83,12 @@ export default function Navigation({
 
     // Now you can do something with the categoryObject
     postUserCategory(categoryObject)
-      .then(res => {
-        console.log(res)
+      .then(() => {
+
         setShowLoading(false)
         setUpdateGetMessages(!updateGetMessages)
       })
-      .catch(e => {
-        console.log(e)
+      .catch(() => {
         setShowLoading(false)
       })
 
@@ -101,12 +100,9 @@ export default function Navigation({
   const filterByInbox = () => {
     setMessagesInfo([])
     setSelectedItem("inbox");
-    // console.log(clearSearch)
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
     setSelectedMessage(null)
-
-    // clearSearch()
   };
 
   const filterBySent = () => {
