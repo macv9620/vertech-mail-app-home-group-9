@@ -324,6 +324,7 @@ const HomeMail = () => {
             setUpdateGetMessages={setUpdateGetMessages}
             updateGetMessages={updateGetMessages}
             showLoading={showLoading}
+            setShowLoading={setShowLoading}
             />
           </Layout.Main>
         </Layout.Root>

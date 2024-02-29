@@ -27,6 +27,7 @@ type Props = {
   setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
   showLoading: boolean;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export default function EmailContent({
@@ -35,7 +36,8 @@ export default function EmailContent({
   selectedItem,
   updateGetMessages,
   setUpdateGetMessages,
-  showLoading
+  showLoading,
+  setShowLoading
 }: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
   const [selectedOption, setSelectedOption] = React.useState<number>(0);
@@ -53,6 +55,8 @@ export default function EmailContent({
     newValue: number | null
   ) => {
     // setSelectedOption(newValue ?? 0);
+
+    setShowLoading(true)
     const data: IUpdateMessageCategory = {
       message_id: selectedMessage?.message_id,
       category_id: newValue,
@@ -61,7 +65,9 @@ export default function EmailContent({
     updateCategoryMessage(data)
       .then(() => {
         setUpdateGetMessages(!updateGetMessages);
+        setShowLoading(false)
       })
+      .catch(() => setShowLoading(false))
 
       // if(newValue){
       //   setSelectedOption(0);
@@ -258,7 +264,7 @@ export default function EmailContent({
                           sx={{ fontSize: "12px" }}
                         >
                           {category.category_id === 0
-                            ? ""
+                            ? "No category"
                             : category.category_name}
                         </Option>
                       ))}
