@@ -61,6 +61,16 @@ const HomeMail = () => {
   };
 
   React.useEffect(() => {
+    if (!showLoading && selectedMessage !== null) {
+
+      const updatedSelectedMessage = messagesInfo?.filter(messageInfo => messageInfo.message_id = selectedMessage.message_id)[0]
+      if(updatedSelectedMessage){
+        setSelectedMessage({ ...updatedSelectedMessage });
+      }
+    }
+  }, [showLoading]);
+
+  React.useEffect(() => {
     let userAuthEmail = "";
 
     const authenticatedUser = sessionStorage.getItem("authenticatedUser");
@@ -110,42 +120,16 @@ const HomeMail = () => {
 
     //Get user categories
     const fetchUserCategories = () => {
-      // const colors: string[] = [
-      //   "#ffeb3b",
-      //   "#651fff",
-      //   "#1de9b6",
-      //   "#9c27b0",
-      //   "#9575cd",
-      //   "#00897b",
-      //   "#c2185b",
-      //   "#ef6c00",
-      //   "#455a64",
-      //   "#00e5ff",
-      //   "#b2dfdb",
-      //   "#cddc39",
-      //   "#ff9e80"
-
-      // ]
-      // const data: IUserCategoryInfo[] = [
-      //   {
-      //     category_id: 0,
-      //     category_name: "Personal",
-      //     color: colors[Math.floor(Math.random() * 11)],
-      //   },
-      //   {
-      //     category_id: 4,
-      //     category_name: "Work",
-      //     color: colors[Math.floor(Math.random() * 11)],
-      //   },
-      //   {
-      //     category_id: 9,
-      //     category_name: "Gym",
-      //     color: colors[Math.floor(Math.random() * 11)],
-      //   },
-      // ];
       getUserCategories(userAuthEmail)
       .then(res => {
-        setCategoriesInfo(res.data)
+        const categories = res.data
+        console.log(categories)
+        categories.unshift({
+          category_id: 0,
+          category_name: "No category",
+          color: ""
+      })
+        setCategoriesInfo(categories)
       })
       .catch(e => {
         console.log(e)
@@ -259,6 +243,7 @@ const HomeMail = () => {
               userLogged={userLogged}
               setShowLoading={setShowLoading}
               setSelectedMessage={setSelectedMessage}
+              setMessagesInfo={setMessagesInfo}
             />
           </Layout.SideNav>
           <Layout.SidePane>
@@ -318,10 +303,19 @@ const HomeMail = () => {
             <Mails
               messagesInfo={messagesInfo}
               setSelectedMessage={setSelectedMessage}
+              selectedItem={selectedItem}
             />
           </Layout.SidePane>
           <Layout.Main>
-            <EmailContent selectedMessage={selectedMessage} categoriesInfo={categoriesInfo} selectedItem={selectedItem}/>
+            <EmailContent 
+            selectedMessage={selectedMessage}
+            setSelectedMessage={setSelectedMessage} 
+            categoriesInfo={categoriesInfo} 
+            selectedItem={selectedItem} 
+            setUpdateGetMessages={setUpdateGetMessages}
+            updateGetMessages={updateGetMessages}
+            showLoading={showLoading}
+            />
           </Layout.Main>
         </Layout.Root>
       </CssVarsProvider>

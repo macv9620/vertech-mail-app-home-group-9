@@ -24,7 +24,8 @@ type Propos = {
   categoriesInfo: IUserCategoryInfo[] | null;
   userLogged: IAuthenticatedUser;
   setShowLoading: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>
+  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>,
+  setMessagesInfo: React.Dispatch<React.SetStateAction<IMessageInfo[] | null>>
 
 };
 
@@ -37,7 +38,8 @@ export default function Navigation({
   categoriesInfo,
   userLogged,
   setShowLoading,
-  setSelectedMessage
+  setSelectedMessage,
+  setMessagesInfo
 
 }: Propos) {
 
@@ -97,6 +99,7 @@ export default function Navigation({
 
 
   const filterByInbox = () => {
+    setMessagesInfo([])
     setSelectedItem("inbox");
     // console.log(clearSearch)
     setSearchTerm("");
@@ -107,6 +110,7 @@ export default function Navigation({
   };
 
   const filterBySent = () => {
+    setMessagesInfo([])
     setSelectedItem("sent");
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
@@ -157,6 +161,7 @@ export default function Navigation({
           }}
         >
           {categoriesInfo?.map((category) => (
+            category.category_id === 0? null :
             <ListItem key={category.category_id}>
               <ListItemButton>
                 <ListItemDecorator>

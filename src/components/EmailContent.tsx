@@ -9,25 +9,66 @@ import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
 import Tooltip from "@mui/joy/Tooltip";
 
+import Select from "@mui/joy/Select";
+
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ForwardToInboxRoundedIcon from "@mui/icons-material/ForwardToInboxRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import Select from "@mui/joy/Select";
+
 import Option from "@mui/joy/Option";
+import { updateCategoryMessage } from "../services/categories/updateCategoryMessage";
 
 type Props = {
   selectedMessage: IMessageInfo | null;
   categoriesInfo: IUserCategoryInfo[] | null;
-  selectedItem: string
+  selectedItem: string;
+  updateGetMessages: boolean;
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
+  showLoading: boolean;
 };
 
 export default function EmailContent({
   selectedMessage,
   categoriesInfo,
-  selectedItem
+  selectedItem,
+  updateGetMessages,
+  setUpdateGetMessages,
 }: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
+  const [selectedOption, setSelectedOption] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    if (selectedMessage && selectedMessage.category_id) {
+      setSelectedOption(selectedMessage.category_id);
+    } else {
+      setSelectedOption(0); // Reset to the initial value
+    }
+  }, [selectedMessage]);
+
+  const handleSelectChange = (
+    event: React.SyntheticEvent | null,
+    newValue: number | null
+  ) => {
+    setSelectedOption(newValue ?? 0);
+    const data: IUpdateMessageCategory = {
+      message_id: selectedMessage?.message_id,
+      category_id: newValue,
+    };
+
+    console.log("data", data);
+
+    updateCategoryMessage(data)
+      .then((res) => {
+        console.log(res);
+        setUpdateGetMessages(!updateGetMessages);
+      })
+      .catch((e) => console.log(e));
+
+    setSelectedOption(0);
+    console.log(event);
+  };
 
   const handleSnackbarOpen = (index: number) => {
     const updatedOpen = [...open];
@@ -67,7 +108,9 @@ export default function EmailContent({
                 <Avatar
                   src={
                     "https://placehold.co/155x232/842520/white?text=" +
-                    selectedMessage.from_user_name[0].toUpperCase()
+                    (selectedItem === "inbox"
+                      ? selectedMessage?.from_user_name[0].toUpperCase()
+                      : selectedMessage?.to_user_name[0].toUpperCase())
                   }
                 />
                 <Box sx={{ ml: 2 }}>
@@ -76,7 +119,9 @@ export default function EmailContent({
                     textColor="text.primary"
                     mb={0.5}
                   >
-                    {selectedMessage?.from_user_name}
+                    {selectedItem === "inbox"
+                      ? selectedMessage?.from_user_name
+                      : selectedMessage?.to_user_name}
                   </Typography>
                   <Typography level="body-xs" textColor="text.tertiary">
                     {selectedMessage?.created_at}
@@ -189,25 +234,38 @@ export default function EmailContent({
                 alignItems: "start",
               }}
             >
-              <Box sx={{ display: "flex", gap: "10px", width: "100%" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "10px",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
                 <Typography level="title-lg" textColor="text.primary">
                   {selectedMessage?.subject}
                 </Typography>
+                {/* <Chip variant="outlined" size="sm">{selectedMessage.category_id === 0?"No category":selectedMessage.category_name}</Chip> */}
                 {selectedItem === "inbox" && (
-                  <Select
-                    size="sm"
-                    color="danger"
-                    placeholder="Select category"
-                  >
-                    {categoriesInfo?.map((category) => (
-                      <Option
-                        key={category.category_id}
-                        value={category.category_id}
-                      >
-                        {category.category_name}
-                      </Option>
-                    ))}
-                  </Select>
+                  <Chip color="success" size="sm">
+                    <Select
+                      onChange={handleSelectChange}
+                      value={selectedOption}
+                      sx={{ fontSize: "10px" }}
+                    >
+                      {categoriesInfo?.map((category) => (
+                        <Option
+                          key={category.category_id}
+                          value={category.category_id}
+                          sx={{ fontSize: "12px" }}
+                        >
+                          {category.category_id === 0
+                            ? ""
+                            : category.category_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Chip>
                 )}
               </Box>
 
