@@ -1,12 +1,16 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom'
 import { describe, expect, vi } from 'vitest'
 import Navigation from '../components/Navigation';
+import * as CreateCategoryService from "../services/categories/createCategory";
+
+
 
 describe('Navigation', () => {
   test('should render the component', () => {
     render(<Navigation 
       selectedItem="" 
+      setMessagesInfo={() => {}} 
       setSelectedItem={() => {}} 
       setSearchTerm={() => {}} 
       setUpdateGetMessages={() => {}} 
@@ -41,6 +45,7 @@ describe('Navigation', () => {
       setSelectedItem={setSelectedItem} 
       setSearchTerm={() => {}} 
       setUpdateGetMessages={() => {}} 
+      setMessagesInfo={() => {}} // Add the missing setMessagesInfo property
       updateGetMessages={false} 
       categoriesInfo={[
         {
@@ -73,6 +78,7 @@ describe('Navigation', () => {
       setSelectedItem={setSelectedItem} 
       setSearchTerm={() => {}} 
       setUpdateGetMessages={() => {}} 
+      setMessagesInfo={() => {}} // Add the missing setMessagesInfo property
       updateGetMessages={false} 
       categoriesInfo={[
         {
@@ -108,6 +114,7 @@ describe('Navigation', () => {
       setSelectedItem={setSelectedItem} 
       setSearchTerm={setSearchTerm} 
       setUpdateGetMessages={setUpdateGetMessages} 
+      setMessagesInfo={() => {}} // Add the missing setMessagesInfo property
       updateGetMessages={false} 
       categoriesInfo={[
         {
@@ -133,5 +140,49 @@ describe('Navigation', () => {
     expect(setSelectedItem).toHaveBeenCalledWith('inbox');
     expect(setSearchTerm).toHaveBeenCalledWith('');
     expect(setUpdateGetMessages).toHaveBeenCalledWith(!updateGetMessages);
+  });
+
+  test('should call postUserCategory and update messages when creating a new category', () => {
+    const setShowLoading = vi.fn();
+    const setUpdateGetMessages = vi.fn();
+    const updateGetMessages = false;
+    const postUserCategory = vi.fn().mockResolvedValue({});
+    vi.spyOn(CreateCategoryService, 'postUserCategory').mockImplementation(postUserCategory);
+
+    render(<Navigation 
+      selectedItem="" 
+      setSelectedItem={() => {}} 
+      setSearchTerm={() => {}} 
+      setUpdateGetMessages={setUpdateGetMessages} 
+      updateGetMessages={updateGetMessages} 
+      categoriesInfo={[
+        {
+          category_id: 1,
+          color: "#000",
+          category_name: "Test"
+        }
+      ]}
+      userLogged={
+        {
+          email: "a",
+          name: "Test"
+        }
+      }
+      setShowLoading={setShowLoading}
+      setSelectedMessage={() => {}}
+      setMessagesInfo={() => {}}
+    />);
+    (async () => {
+      fireEvent.change(screen.getByPlaceholderText('Type your category name'), { target: { value: 'New Category' } });
+      fireEvent.submit(screen.getByRole('button', { name: 'Create category' }));
+      expect(setShowLoading).toHaveBeenCalledWith(true);
+      expect(postUserCategory).toHaveBeenCalledWith({
+        category_name: 'New Category',
+        color: expect.any(String),
+        email: 'a'
+      });
+      await waitFor(() => expect(setShowLoading).toHaveBeenCalledWith(false));
+      expect(setUpdateGetMessages).toHaveBeenCalledWith(!updateGetMessages);
+    })();
   });
 });
