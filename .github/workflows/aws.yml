@@ -31,12 +31,12 @@ on:
     branches: ["main"]
 
 env:
-  AWS_REGION: us-east-1
-  ECR_REPOSITORY: home9/email_app_repository
-  ECS_SERVICE: front_email_app_service
-  ECS_CLUSTER: email_app_home_9
-  ECS_TASK_DEFINITION: .github/workflows/email_app_task_definition_front-revision1.json
-  CONTAINER_NAME: front_email_app_container
+  AWS_REGION: us-east-1 #OK
+  ECR_REPOSITORY: home9/email_app_repository #OK
+  ECS_SERVICE: front_email_app_service #OK
+  ECS_CLUSTER: email_app_home_9 #OK
+  ECS_TASK_DEFINITION: .github/workflows/email_app_task_definition_front-revision1.json #OK
+  CONTAINER_NAME: front_email_app_container #OK
 
 jobs:
   test:
