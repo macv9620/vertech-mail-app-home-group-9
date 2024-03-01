@@ -13,7 +13,8 @@ interface IMessageInfo {
     color: string,
     category_id: number,
     category_name: string,
-    color: string
+    color: string,
+    isActive?: boolean
 }
 
 interface IPostUserData {

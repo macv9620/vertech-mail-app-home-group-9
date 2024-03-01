@@ -13,7 +13,7 @@ import Stack from "@mui/joy/Stack";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import { Link, useNavigate } from "react-router-dom";
-import { postUser } from "../services/createUser";
+import { postUser } from "../services/users/createUser";
 import Snackbar from "@mui/joy/Snackbar";
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -99,11 +99,9 @@ export default function SignUp() {
     postUser(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true)
-        console.log(res)
         navigation('/')
       })
       .catch((e) => {
-        console.log(e)
         if(e.response?.status === 400){
           handleSnackbarOpen(e.response.data.message? e.response.data.message:'Uncontrolled error', false)
         } else if(e.code == 'ERR_NETWORK') {

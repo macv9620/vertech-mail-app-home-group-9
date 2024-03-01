@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { describe, expect, it, vi} from 'vitest'
 
 import axios from 'axios';
-import { getUserMessages } from '../services/getUserMessages';
+import { getUserMessages } from '../services/messages/getUserMessages';
 
 vi.mock('axios');
 

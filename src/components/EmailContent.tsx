@@ -18,15 +18,18 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import Option from "@mui/joy/Option";
 import { updateCategoryMessage } from "../services/categories/updateCategoryMessage";
+import { inactiveMessage } from "../services/messages/inactiveMessage";
 
 type Props = {
   selectedMessage: IMessageInfo | null;
+  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
   categoriesInfo: IUserCategoryInfo[] | null;
   selectedItem: string;
   updateGetMessages: boolean;
   setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
   showLoading: boolean;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenSnackbar: React.Dispatch<React.SetStateAction<ISnackbarOpen>>;
 };
 
 export default function EmailContent({
@@ -35,39 +38,44 @@ export default function EmailContent({
   selectedItem,
   updateGetMessages,
   setUpdateGetMessages,
+  showLoading,
+  setShowLoading,
+  setOpenSnackbar,
+  setSelectedMessage
 }: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
   const [selectedOption, setSelectedOption] = React.useState<number>(0);
 
   React.useEffect(() => {
-    if (selectedMessage && selectedMessage.category_id) {
+
+    if(selectedMessage){
       setSelectedOption(selectedMessage.category_id);
-    } else {
-      setSelectedOption(0); // Reset to the initial value
     }
-  }, [selectedMessage]);
+
+  }, [selectedMessage, showLoading]);
 
   const handleSelectChange = (
     event: React.SyntheticEvent | null,
     newValue: number | null
   ) => {
-    setSelectedOption(newValue ?? 0);
+    // setSelectedOption(newValue ?? 0);
+
+    setShowLoading(true)
     const data: IUpdateMessageCategory = {
       message_id: selectedMessage?.message_id,
       category_id: newValue,
     };
 
-    console.log("data", data);
-
     updateCategoryMessage(data)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setUpdateGetMessages(!updateGetMessages);
+        setShowLoading(false)
       })
-      .catch((e) => console.log(e));
+      .catch(() => setShowLoading(false))
 
-    setSelectedOption(0);
-    console.log(event);
+      // if(newValue){
+      //   setSelectedOption(0);
+      // }
   };
 
   const handleSnackbarOpen = (index: number) => {
@@ -81,6 +89,32 @@ export default function EmailContent({
     updatedOpen[index] = false;
     setOpen(updatedOpen);
   };
+
+  const handleDeleteMessage = () => {
+    setShowLoading(true)
+    if(selectedMessage){
+      inactiveMessage(selectedMessage?.message_id)
+      .then(() => {
+        setSelectedMessage(null)
+        setUpdateGetMessages(!updateGetMessages)
+        setOpenSnackbar({
+          open: true,
+          message: "Message successfully deleted",
+          success: true,
+        })
+      })
+      .catch(() => {
+        setOpenSnackbar({
+          open: true,
+          message: "Unhandled error",
+          success: false,
+        })
+        setShowLoading(false)
+      })
+
+    }
+
+  }
 
   return (
     <>
@@ -110,7 +144,9 @@ export default function EmailContent({
                     "https://placehold.co/155x232/842520/white?text=" +
                     (selectedItem === "inbox"
                       ? selectedMessage?.from_user_name[0].toUpperCase()
-                      : selectedMessage?.to_user_name[0].toUpperCase())
+                      : selectedItem === "sent"
+                      ? selectedMessage?.to_user_name[0].toUpperCase()
+                      : selectedMessage?.from_user_name[0].toUpperCase())
                   }
                 />
                 <Box sx={{ ml: 2 }}>
@@ -119,9 +155,11 @@ export default function EmailContent({
                     textColor="text.primary"
                     mb={0.5}
                   >
-                    {selectedItem === "inbox"
-                      ? selectedMessage?.from_user_name
-                      : selectedMessage?.to_user_name}
+                        {                      (selectedItem === "inbox"
+                        ? selectedMessage?.from_user_name
+                        : selectedItem === "sent"
+                        ? selectedMessage?.to_user_name
+                        : selectedMessage?.from_user_name)}
                   </Typography>
                   <Typography level="body-xs" textColor="text.tertiary">
                     {selectedMessage?.created_at}
@@ -194,16 +232,17 @@ export default function EmailContent({
                 >
                   Your message has been forwarded.
                 </Snackbar>
-                <Button
-                  disabled
-                  size="sm"
-                  variant="plain"
-                  color="danger"
-                  startDecorator={<DeleteRoundedIcon />}
-                  onClick={() => handleSnackbarOpen(2)}
-                >
-                  Delete
-                </Button>
+                {selectedItem !== "sent" && 
+                                <Button
+                                size="sm"
+                                variant="plain"
+                                color="danger"
+                                startDecorator={<DeleteRoundedIcon />}
+                                onClick={() => handleDeleteMessage()}
+                              >
+                                Delete
+                              </Button>
+                }
                 <Snackbar
                   color="danger"
                   open={open[2]}
@@ -246,12 +285,14 @@ export default function EmailContent({
                   {selectedMessage?.subject}
                 </Typography>
                 {/* <Chip variant="outlined" size="sm">{selectedMessage.category_id === 0?"No category":selectedMessage.category_name}</Chip> */}
-                {selectedItem === "inbox" && (
+                {selectedItem !== "sent" && (
                   <Chip color="success" size="sm">
                     <Select
+                      size={"" as "sm"}
+                      color="success"
                       onChange={handleSelectChange}
                       value={selectedOption}
-                      sx={{ fontSize: "10px" }}
+                      sx={{ fontSize: "13px" }}
                     >
                       {categoriesInfo?.map((category) => (
                         <Option
@@ -260,7 +301,7 @@ export default function EmailContent({
                           sx={{ fontSize: "12px" }}
                         >
                           {category.category_id === 0
-                            ? ""
+                            ? "No category"
                             : category.category_name}
                         </Option>
                       ))}
