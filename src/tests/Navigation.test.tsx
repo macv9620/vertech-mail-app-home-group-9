@@ -178,7 +178,7 @@ describe('Navigation', () => {
       expect(setShowLoading).toHaveBeenCalledWith(true);
       expect(postUserCategory).toHaveBeenCalledWith({
         category_name: 'New Category',
-        // color: expect.any(String),
+        color: expect.any(String),
         email: 'a'
       });
       await waitFor(() => expect(setShowLoading).toHaveBeenCalledWith(false));
