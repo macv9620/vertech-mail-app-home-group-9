@@ -258,7 +258,7 @@ const HomeMail = () => {
                 p: 2,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
+                justifyContent: "space-between"
               }}
             >
               <Box sx={{ alignItems: "center", gap: 1 }}>

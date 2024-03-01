@@ -89,6 +89,7 @@ function SidePane(props: BoxProps) {
       sx={[
         {
           bgcolor: 'background.surface',
+          height: "90vh",
           borderRight: '1px solid',
           borderColor: 'divider',
           display: {

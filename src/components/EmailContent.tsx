@@ -55,7 +55,7 @@ export default function EmailContent({
   }, [selectedMessage, showLoading]);
 
   const handleSelectChange = (
-    event: React.SyntheticEvent | null,
+      _: React.SyntheticEvent | null,
     newValue: number | null
   ) => {
     // setSelectedOption(newValue ?? 0);

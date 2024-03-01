@@ -36,14 +36,14 @@ export default function EmailList({
   }
 
   return (
-    <Box sx={{ overflow: "auto" }}>
+    <Box sx={{ overflowY: "scroll", height: "75vh"}}>
       <List
         sx={{
           [`& .${listItemButtonClasses.root}.${listItemButtonClasses.selected}`]:
             {
               borderLeft: "2px solid",
               borderLeftColor: "var(--joy-palette-primary-outlinedBorder)",
-            },
+            }
         }}
       >
         {filteredMessages?.map((item, index) => (
