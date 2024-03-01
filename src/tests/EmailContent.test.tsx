@@ -40,7 +40,11 @@ describe('EmailContent', () => {
       snackbarInfoMessage: '',
       setSnackbarInfoMessage: () => {},
     };
-    render(<EmailContent {...props} />);
+    const propsWithSnackbar = {
+      ...props,
+      setOpenSnackbar: () => {},
+    };
+    render(<EmailContent {...propsWithSnackbar} />);
     const chipElement = screen.getByText(/Please select a message/i);
     expect(chipElement).toBeInTheDocument();
   });
@@ -59,11 +63,21 @@ describe('EmailContent', () => {
       category_id: 1,
       category_name: 'Category Name',
     };
-    render(<EmailContent selectedMessage={selectedMessage} categoriesInfo={null} selectedItem={""} updateGetMessages={false} setUpdateGetMessages={function (): void {
-      throw new Error("Function not implemented.");
-    } } setSelectedMessage={function (): void {
-      throw new Error("Function not implemented.");
-    } } showLoading={false} />);
+    render(<EmailContent
+      selectedMessage={selectedMessage}
+      categoriesInfo={null}
+      selectedItem={""}
+      updateGetMessages={false}
+      setUpdateGetMessages={function (): void {
+        throw new Error("Function not implemented.");
+      }}
+      setSelectedMessage={function (): void {
+        throw new Error("Function not implemented.");
+      }}
+      showLoading={false}
+      setShowLoading={() => {}} // Add setShowLoading property
+      setOpenSnackbar={() => {}} // Add setOpenSnackbar property
+    />);
     const fromUserElement = screen.getByText(/From/i);
     expect(fromUserElement).toBeInTheDocument();
     const toUserElement = screen.getByText(/to/i);
