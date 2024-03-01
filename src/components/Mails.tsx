@@ -9,11 +9,13 @@ import ListItemButton, { listItemButtonClasses } from "@mui/joy/ListItemButton";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 
 type Props = {
+  // Props for managing message information and selection
   messagesInfo: IMessageInfo[] | null;
   setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
   selectedItem: string;
-  userAuthEmail: string
+  userAuthEmail: string;
 };
+
 export default function EmailList({
   messagesInfo,
   setSelectedMessage,
@@ -22,16 +24,16 @@ export default function EmailList({
 }: Props): JSX.Element {
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
 
-  let filteredMessages = null
-  if(messagesInfo){
-    filteredMessages = [...messagesInfo]
-    
-    if(selectedItem !== "inbox" && selectedItem !== "sent"){
-      console.log("filteredMessages", filteredMessages)
-      console.log("selectedItem", selectedItem)
+  // Filtering messages based on the selected item and user authentication email
+  let filteredMessages = null;
+  if (messagesInfo) {
+    filteredMessages = [...messagesInfo];
 
-      filteredMessages = filteredMessages
-        .filter(message => (message.from_user !== userAuthEmail) && (String(message.category_id) === selectedItem))
+    if (selectedItem !== "inbox" && selectedItem !== "sent") {
+      filteredMessages = filteredMessages.filter(message =>
+        // Filter messages not sent by the authenticated user and match the selected category
+        (message.from_user !== userAuthEmail) && (String(message.category_id) === selectedItem)
+      );
     }
   }
 

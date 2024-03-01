@@ -60,12 +60,6 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
       setSubject(e.currentTarget.value);
     };
 
-    // const updateBody: React.ChangeEventHandler<HTMLTextAreaElement> = (
-    //   e
-    // ): void => {
-    //   setBody(e.currentTarget.value);
-    // };
-
     const updateBody: React.ChangeEventHandler<HTMLTextAreaElement> = (
       e: React.ChangeEvent<HTMLTextAreaElement>
     ): void => {

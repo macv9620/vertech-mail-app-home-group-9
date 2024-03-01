@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { postLogin } from "../services/login/postLogin";
 import Snackbar from "@mui/joy/Snackbar";
 
+// Interface for form elements
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
   password: HTMLInputElement;
@@ -24,6 +25,7 @@ interface SignInFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
+// Component for toggling color scheme
 function ColorSchemeToggle(props: IconButtonProps) {
   const { onClick, ...other } = props;
   const { mode, setMode } = useColorScheme();
@@ -65,6 +67,7 @@ export default function Login() {
     open: false,
   });
 
+  // Function to handle opening Snackbar with success or error message
   const handleSnackbarOpen = (message: string, success: boolean) => {
     setOpenSnackbar({
       open: true,
@@ -73,20 +76,24 @@ export default function Login() {
     });
   };
 
+  // Function to close Snackbar
   const closeSnackBar = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
 
+  // Function to handle form submission
   const hadleSubmit = (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
 
     const formElements = event.currentTarget.elements;
 
+    // Extracting email and password from form
     const data = {
       email: formElements.email.value + '@vertech.com.co',
       password: formElements.password.value,
     };
 
+    // Posting login data
     postLogin(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true);
@@ -160,6 +167,7 @@ export default function Login() {
                 justifyContent: "space-between",
               }}
             >
+              {/* Toggle dark/light mode */}
               <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}></Box>
               <ColorSchemeToggle />
             </Box>
@@ -204,6 +212,7 @@ export default function Login() {
                 <form
                   onSubmit={hadleSubmit}
                 >
+                  {/* Login form */}
                   <FormControl required>
                     <FormLabel required>Email</FormLabel>
                     <Box sx={{ display: "flex", alignItems: "center" }}>

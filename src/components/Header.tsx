@@ -21,20 +21,24 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-
-
 import { useAuthContext } from "../context/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
 
+// Component for toggling color scheme
 function ColorSchemeToggle() {
   const { mode, setMode } = useColorScheme();
   const [mounted, setMounted] = React.useState(false);
+  
+  // Effect to indicate that component has been mounted
   React.useEffect(() => {
     setMounted(true);
   }, []);
+  
+  // Render appropriate icon based on current color scheme
   if (!mounted) {
     return <IconButton size="sm" variant="outlined" color="primary" />;
   }
+  
   return (
     <Tooltip title="Change theme" variant="outlined">
       <IconButton
@@ -44,6 +48,7 @@ function ColorSchemeToggle() {
         color="neutral"
         sx={{ alignSelf: "center" }}
         onClick={() => {
+          // Toggle between light and dark mode
           if (mode === "light") {
             setMode("dark");
           } else {
@@ -57,7 +62,8 @@ function ColorSchemeToggle() {
   );
 }
 
-type Propos = {
+type Props = {
+  // Props related to managing messages
   updateGetMessages: boolean;
   setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
   selectedItem: string;
@@ -71,7 +77,8 @@ type Propos = {
 
 type ClearSearchFunction = () => void;
 
-const Header =  ({
+const Header = ({
+  // Destructuring props
   setUpdateGetMessages,
   updateGetMessages,
   searchTerm,
@@ -79,24 +86,25 @@ const Header =  ({
   messagesInfo,
   setMessagesInfo,
   setSearchTerm
-}: Propos) => {
+}: Props): JSX.Element => {
 
-
+  // Accessing authentication context and navigation hook
   const { userLogged, setUserLogged } = useAuthContext();
   const navigate = useNavigate();
+
+  // State to store original messages info
   const [messagesInfoOrigin, setMessagesInfoOrigin] = React.useState<
     IMessageInfo[] | null
   >(null);
 
+  // Effect to update original messages info when it changes
   React.useEffect(() => {
     setMessagesInfoOrigin(messagesInfo);
   }, [messagesInfo]);
 
-  // React.useEffect(()=> {
-  //   clearSearch()
-  // }, [selectedItem])
-
+  // Function to handle user logout
   const logout = () => {
+    // Clearing session storage and resetting user context
     sessionStorage.clear();
     setUserLogged({
       name: "",
@@ -105,11 +113,9 @@ const Header =  ({
     navigate("/");
   };
 
+  // Function to filter messages based on search term
   const handleSearch = () => {
-
-
     if (messagesInfoOrigin && searchTerm !== "") {
-
       let filteredMessages = [...messagesInfoOrigin];
       if (selectedItem === "inbox") {
         filteredMessages = filteredMessages.filter(
@@ -118,21 +124,19 @@ const Header =  ({
               message.from_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
       } else if (selectedItem === "sent") {
-
-
         filteredMessages = filteredMessages.filter(
           (message) =>
             (message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
               message.to_user.toLowerCase().includes(searchTerm.toLowerCase()))
         );
-
       }
+      // Updating messages info based on filtered results
       setMessagesInfo(filteredMessages);
     }
   };
 
+  // Function to clear search term and update messages
   const clearSearch: ClearSearchFunction = () => {
-
     setSearchTerm("");
     setUpdateGetMessages(!updateGetMessages);
   };

@@ -7,12 +7,14 @@ import Typography from "@mui/joy/Typography";
 import Button from "@mui/joy/Button";
 import Stack from "@mui/joy/Stack";
 
+// Importing icons for UI elements
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import RestorePageTwoToneIcon from "@mui/icons-material/RestorePageTwoTone";
 
+// Importing custom components and context
 import Layout from "../components/Layout";
 import Navigation from "../components/Navigation";
 import Mails from "../components/Mails";
@@ -22,33 +24,49 @@ import { Header } from "../components/Header";
 import Snackbar from "@mui/joy/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContextProvider";
+
+// Importing services for fetching data
 import { getUserMessages } from "../services/messages/getUserMessages";
-import { LinearProgress } from "@mui/joy";
 import { getUserCategories } from "../services/categories/getCategories";
+
+// Importing MUI components
+import { LinearProgress } from "@mui/joy";
 
 const HomeMail = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null);
-  const [categoriesInfo, setCategoriesInfo] = React.useState<IUserCategoryInfo[] | null>(null);
+  // State for storing user messages and categories
+  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(
+    null
+  );
+  const [categoriesInfo, setCategoriesInfo] = React.useState<
+    IUserCategoryInfo[] | null
+  >(null);
 
-  const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
+  // State for handling selected message and user authentication
+  const [selectedMessage, setSelectedMessage] =
+    React.useState<IMessageInfo | null>(null);
   const { userLogged, setUserLogged } = useAuthContext();
-  const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
+
+  // State for triggering message update and controlling UI loading
+  const [updateGetMessages, setUpdateGetMessages] =
+    React.useState<boolean>(false);
   const [selectedItem, setSelectedItem] = React.useState<string>("inbox");
   const [userAuthEmail, setUserEmailstring] = React.useState<string>("null");
   const [searchTerm, setSearchTerm] = React.useState<string>("");
 
-  //Control loading animation
+  // Control loading animation
   const [showLoading, setShowLoading] = React.useState<boolean>(false);
 
+  // State for Snackbar notifications
   const [openSnackbar, setOpenSnackbar] = React.useState<ISnackbarOpen>({
     success: true,
     message: "",
     open: false,
   });
 
+  // Function to close Snackbar
   const closeSnackBar = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
@@ -56,6 +74,7 @@ const HomeMail = () => {
   React.useEffect(() => {
     let userAuthEmail = "";
 
+    // Retrieve user authentication data from sessionStorage
     const authenticatedUser = sessionStorage.getItem("authenticatedUser");
     if (authenticatedUser) {
       try {
@@ -68,10 +87,11 @@ const HomeMail = () => {
         console.error("Error parsing loggedUser from sessionStorage:", error);
       }
     } else {
+      // Redirect to homepage if no user authenticated
       navigate("/");
     }
 
-    //Get user messages
+    // Fetch user messages
     const fetchMessages = () => {
       setShowLoading(true);
       getUserMessages(userAuthEmail)
@@ -117,7 +137,7 @@ const HomeMail = () => {
         });
     };
 
-    //Get user categories
+    // Fetch user categories
     const fetchUserCategories = () => {
       getUserCategories(userAuthEmail).then((res) => {
         const categories = res.data;
@@ -137,6 +157,7 @@ const HomeMail = () => {
   return (
     <>
       {showLoading && (
+        // Display loading animation
         <Box sx={{ width: "20px" }}>
           <LinearProgress
             sx={{ position: "fixed", zIndex: 10000, width: "100vw" }}
@@ -168,6 +189,7 @@ const HomeMail = () => {
             borderColor: "divider",
           }}
         >
+          {/* Navigation buttons */}
           <Button
             variant="plain"
             color="neutral"

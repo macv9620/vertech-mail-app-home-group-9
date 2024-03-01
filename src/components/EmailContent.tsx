@@ -20,6 +20,7 @@ import Option from "@mui/joy/Option";
 import { updateCategoryMessage } from "../services/categories/updateCategoryMessage";
 import { inactiveMessage } from "../services/messages/inactiveMessage";
 
+// Define the type for component props
 type Props = {
   selectedMessage: IMessageInfo | null;
   setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
@@ -43,60 +44,68 @@ export default function EmailContent({
   setOpenSnackbar,
   setSelectedMessage
 }: Props): JSX.Element {
+  // State for controlling Snackbar open/close
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
+  // State for storing selected option in Select component
   const [selectedOption, setSelectedOption] = React.useState<number>(0);
 
   React.useEffect(() => {
-
+    // Update selected option when selected message changes or loading state changes
     if(selectedMessage){
       setSelectedOption(selectedMessage.category_id);
     }
-
   }, [selectedMessage, showLoading]);
 
+  // Handle change in Select component
   const handleSelectChange = (
       _: React.SyntheticEvent | null,
     newValue: number | null
   ) => {
-    // setSelectedOption(newValue ?? 0);
-
+    // Set loading state to true
     setShowLoading(true)
     const data: IUpdateMessageCategory = {
       message_id: selectedMessage?.message_id,
       category_id: newValue,
     };
 
+    // Call service to update category message
     updateCategoryMessage(data)
       .then(() => {
+        // Toggle update state to fetch new messages
         setUpdateGetMessages(!updateGetMessages);
+        // Set loading state to false
         setShowLoading(false)
       })
       .catch(() => setShowLoading(false))
-
-      // if(newValue){
-      //   setSelectedOption(0);
-      // }
   };
 
+  // Handle opening Snackbar
   const handleSnackbarOpen = (index: number) => {
     const updatedOpen = [...open];
     updatedOpen[index] = true;
     setOpen(updatedOpen);
   };
 
+  // Handle closing Snackbar
   const handleSnackbarClose = (index: number) => {
     const updatedOpen = [...open];
     updatedOpen[index] = false;
     setOpen(updatedOpen);
   };
 
+  // Handle deleting message
   const handleDeleteMessage = () => {
+    // Set loading state to true
     setShowLoading(true)
     if(selectedMessage){
+      // Call service to mark message as inactive
       inactiveMessage(selectedMessage?.message_id)
       .then(() => {
+        // Clear selected message
         setSelectedMessage(null)
+        // Toggle update state to fetch new messages
         setUpdateGetMessages(!updateGetMessages)
+        // Open success Snackbar
         setOpenSnackbar({
           open: true,
           message: "Message successfully deleted",
@@ -104,17 +113,18 @@ export default function EmailContent({
         })
       })
       .catch(() => {
+        // Open error Snackbar
         setOpenSnackbar({
           open: true,
           message: "Unhandled error",
           success: false,
         })
+        // Set loading state to false
         setShowLoading(false)
       })
-
     }
-
   }
+
 
   return (
     <>
