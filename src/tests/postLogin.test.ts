@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { afterEach, describe, expect, it, vi} from 'vitest'
 import axios from 'axios';
-import { postLogin } from '../services/postLogin';
+import { postLogin } from '../services/login/postLogin';
 
 vi.mock('axios');
 

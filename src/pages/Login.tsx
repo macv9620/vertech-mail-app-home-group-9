@@ -13,7 +13,7 @@ import Stack from "@mui/joy/Stack";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import { Link, useNavigate } from "react-router-dom";
-import { postLogin } from "../services/postLogin";
+import { postLogin } from "../services/login/postLogin";
 import Snackbar from "@mui/joy/Snackbar";
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -90,12 +90,10 @@ export default function Login() {
     postLogin(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true);
-        console.log(res);
         sessionStorage.setItem('authenticatedUser', JSON.stringify(res.data.data))
         navigation("/home");
       })
       .catch((e) => {
-        console.log(e);
         if (e.response?.status === 401) {
           handleSnackbarOpen(
             e.response.data.message

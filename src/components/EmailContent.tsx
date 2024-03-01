@@ -9,17 +9,74 @@ import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
 import Tooltip from "@mui/joy/Tooltip";
 
+import Select from "@mui/joy/Select";
+
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ForwardToInboxRoundedIcon from "@mui/icons-material/ForwardToInboxRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
+import Option from "@mui/joy/Option";
+import { updateCategoryMessage } from "../services/categories/updateCategoryMessage";
+import { inactiveMessage } from "../services/messages/inactiveMessage";
+
 type Props = {
   selectedMessage: IMessageInfo | null;
+  setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
+  categoriesInfo: IUserCategoryInfo[] | null;
+  selectedItem: string;
+  updateGetMessages: boolean;
+  setUpdateGetMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  showLoading: boolean;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenSnackbar: React.Dispatch<React.SetStateAction<ISnackbarOpen>>;
 };
 
-export default function EmailContent({ selectedMessage }: Props): JSX.Element {
+export default function EmailContent({
+  selectedMessage,
+  categoriesInfo,
+  selectedItem,
+  updateGetMessages,
+  setUpdateGetMessages,
+  showLoading,
+  setShowLoading,
+  setOpenSnackbar,
+  setSelectedMessage
+}: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean[]>([false, false, false]);
+  const [selectedOption, setSelectedOption] = React.useState<number>(0);
+
+  React.useEffect(() => {
+
+    if(selectedMessage){
+      setSelectedOption(selectedMessage.category_id);
+    }
+
+  }, [selectedMessage, showLoading]);
+
+  const handleSelectChange = (
+      _: React.SyntheticEvent | null,
+    newValue: number | null
+  ) => {
+    // setSelectedOption(newValue ?? 0);
+
+    setShowLoading(true)
+    const data: IUpdateMessageCategory = {
+      message_id: selectedMessage?.message_id,
+      category_id: newValue,
+    };
+
+    updateCategoryMessage(data)
+      .then(() => {
+        setUpdateGetMessages(!updateGetMessages);
+        setShowLoading(false)
+      })
+      .catch(() => setShowLoading(false))
+
+      // if(newValue){
+      //   setSelectedOption(0);
+      // }
+  };
 
   const handleSnackbarOpen = (index: number) => {
     const updatedOpen = [...open];
@@ -32,6 +89,32 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
     updatedOpen[index] = false;
     setOpen(updatedOpen);
   };
+
+  const handleDeleteMessage = () => {
+    setShowLoading(true)
+    if(selectedMessage){
+      inactiveMessage(selectedMessage?.message_id)
+      .then(() => {
+        setSelectedMessage(null)
+        setUpdateGetMessages(!updateGetMessages)
+        setOpenSnackbar({
+          open: true,
+          message: "Message successfully deleted",
+          success: true,
+        })
+      })
+      .catch(() => {
+        setOpenSnackbar({
+          open: true,
+          message: "Unhandled error",
+          success: false,
+        })
+        setShowLoading(false)
+      })
+
+    }
+
+  }
 
   return (
     <>
@@ -59,7 +142,11 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                 <Avatar
                   src={
                     "https://placehold.co/155x232/842520/white?text=" +
-                    selectedMessage.from_user_name[0].toUpperCase()
+                    (selectedItem === "inbox"
+                      ? selectedMessage?.from_user_name[0].toUpperCase()
+                      : selectedItem === "sent"
+                      ? selectedMessage?.to_user_name[0].toUpperCase()
+                      : selectedMessage?.from_user_name[0].toUpperCase())
                   }
                 />
                 <Box sx={{ ml: 2 }}>
@@ -68,7 +155,11 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                     textColor="text.primary"
                     mb={0.5}
                   >
-                    {selectedMessage?.from_user_name}
+                        {                      (selectedItem === "inbox"
+                        ? selectedMessage?.from_user_name
+                        : selectedItem === "sent"
+                        ? selectedMessage?.to_user_name
+                        : selectedMessage?.from_user_name)}
                   </Typography>
                   <Typography level="body-xs" textColor="text.tertiary">
                     {selectedMessage?.created_at}
@@ -141,16 +232,17 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                 >
                   Your message has been forwarded.
                 </Snackbar>
-                <Button
-                  disabled
-                  size="sm"
-                  variant="plain"
-                  color="danger"
-                  startDecorator={<DeleteRoundedIcon />}
-                  onClick={() => handleSnackbarOpen(2)}
-                >
-                  Delete
-                </Button>
+                {selectedItem !== "sent" && 
+                                <Button
+                                size="sm"
+                                variant="plain"
+                                color="danger"
+                                startDecorator={<DeleteRoundedIcon />}
+                                onClick={() => handleDeleteMessage()}
+                              >
+                                Delete
+                              </Button>
+                }
                 <Snackbar
                   color="danger"
                   open={open[2]}
@@ -181,22 +273,43 @@ export default function EmailContent({ selectedMessage }: Props): JSX.Element {
                 alignItems: "start",
               }}
             >
-              <Typography
-                level="title-lg"
-                textColor="text.primary"
-                endDecorator={
-                  <Chip
-                    component="span"
-                    size="sm"
-                    variant="outlined"
-                    color="warning"
-                  >
-                    Personal
-                  </Chip>
-                }
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "10px",
+                  width: "100%",
+                  alignItems: "center",
+                }}
               >
-                {selectedMessage?.subject}
-              </Typography>
+                <Typography level="title-lg" textColor="text.primary">
+                  {selectedMessage?.subject}
+                </Typography>
+                {/* <Chip variant="outlined" size="sm">{selectedMessage.category_id === 0?"No category":selectedMessage.category_name}</Chip> */}
+                {selectedItem !== "sent" && (
+                  <Chip color="success" size="sm">
+                    <Select
+                      size={"" as "sm"}
+                      color="success"
+                      onChange={handleSelectChange}
+                      value={selectedOption}
+                      sx={{ fontSize: "13px" }}
+                    >
+                      {categoriesInfo?.map((category) => (
+                        <Option
+                          key={category.category_id}
+                          value={category.category_id}
+                          sx={{ fontSize: "12px" }}
+                        >
+                          {category.category_id === 0
+                            ? "No category"
+                            : category.category_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Chip>
+                )}
+              </Box>
+
               <Box
                 sx={{
                   mt: 1,
