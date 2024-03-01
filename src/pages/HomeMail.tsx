@@ -23,7 +23,7 @@ import { Header } from "../components/Header";
 import Snackbar from "@mui/joy/Snackbar";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContextProvider";
-import { getUserMessages } from "../services/getUserMessages";
+import { getUserMessages } from "../services/messages/getUserMessages";
 import { LinearProgress } from "@mui/joy";
 import { getUserCategories } from "../services/categories/getCategories";
 
@@ -94,32 +94,29 @@ const HomeMail = () => {
       setShowLoading(true);
       getUserMessages(userAuthEmail)
         .then((res) => {
-          console.log(res)
 
           const messages: IMessageInfo[] = res.data?.sort(
             (messageA: IMessageInfo, messageB: IMessageInfo) =>
               messageB.message_id - messageA.message_id
           );
           // Filter messages based on selected item
+          const filteredActiveMessages = messages.filter(message => !(message.to_user === userAuthEmail && !message.isActive))
           if (selectedItem === "inbox") {
             setMessagesInfo(
-              messages?.filter((message) => message.to_user === userAuthEmail)
+              filteredActiveMessages?.filter((message) => message.to_user === userAuthEmail)
             );
           } else if (selectedItem === "sent") {
             setMessagesInfo(
-              messages?.filter((message) => message.from_user === userAuthEmail)
+              filteredActiveMessages?.filter((message) => message.from_user === userAuthEmail)
             );
           } else {
-            setMessagesInfo(messages);
+            setMessagesInfo(filteredActiveMessages);
           }
           setShowLoading(false);
 
 
           if (selectedMessage) {
-            console.log("Selected message", selectedMessage)
-            const updatedSelectedMessage = messages?.filter(messageInfo => messageInfo.message_id == selectedMessage.message_id)[0]
-            console.log(updatedSelectedMessage)
-            console.log("updatedSelectedMessage", updatedSelectedMessage)
+            const updatedSelectedMessage = filteredActiveMessages?.filter(messageInfo => messageInfo.message_id == selectedMessage.message_id)[0]
             if(updatedSelectedMessage){
               setSelectedMessage({ ...updatedSelectedMessage });
             }
@@ -270,7 +267,7 @@ const HomeMail = () => {
                   textColor="text.secondary"
                   component="h1"
                 >
-                  My inbox
+                  My mails
                 </Typography>
                 <Typography level="title-sm" textColor="text.tertiary">
                   {messagesInfo?.length} emails
@@ -313,6 +310,7 @@ const HomeMail = () => {
               messagesInfo={messagesInfo}
               setSelectedMessage={setSelectedMessage}
               selectedItem={selectedItem}
+              userAuthEmail={userAuthEmail}
             />
           </Layout.SidePane>
           <Layout.Main>
@@ -325,6 +323,7 @@ const HomeMail = () => {
             updateGetMessages={updateGetMessages}
             showLoading={showLoading}
             setShowLoading={setShowLoading}
+            setOpenSnackbar={setOpenSnackbar}
             />
           </Layout.Main>
         </Layout.Root>

@@ -13,7 +13,7 @@ import Stack from "@mui/joy/Stack";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import { Link, useNavigate } from "react-router-dom";
-import { postUser } from "../services/createUser";
+import { postUser } from "../services/users/createUser";
 import Snackbar from "@mui/joy/Snackbar";
 
 interface FormElements extends HTMLFormControlsCollection {

@@ -12,13 +12,28 @@ type Props = {
   messagesInfo: IMessageInfo[] | null;
   setSelectedMessage: React.Dispatch<React.SetStateAction<IMessageInfo | null>>;
   selectedItem: string;
+  userAuthEmail: string
 };
 export default function EmailList({
   messagesInfo,
   setSelectedMessage,
   selectedItem,
+  userAuthEmail
 }: Props): JSX.Element {
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+
+  let filteredMessages = null
+  if(messagesInfo){
+    filteredMessages = [...messagesInfo]
+    
+    if(selectedItem !== "inbox" && selectedItem !== "sent"){
+      console.log("filteredMessages", filteredMessages)
+      console.log("selectedItem", selectedItem)
+
+      filteredMessages = filteredMessages
+        .filter(message => (message.from_user !== userAuthEmail) && (String(message.category_id) === selectedItem))
+    }
+  }
 
   return (
     <Box sx={{ overflow: "auto" }}>
@@ -31,7 +46,7 @@ export default function EmailList({
             },
         }}
       >
-        {messagesInfo?.map((item, index) => (
+        {filteredMessages?.map((item, index) => (
           <React.Fragment key={index}>
             <ListItem>
               <ListItemButton
@@ -41,7 +56,6 @@ export default function EmailList({
                 })}
                 sx={{ p: 2 }}
                 onClick={() => {
-                  console.log(item)
                   setSelectedMessage(item);
                   setSelectedIndex(index);
                 }}
@@ -53,7 +67,9 @@ export default function EmailList({
                       "https://placehold.co/155x232/842520/white?text=" +
                       (selectedItem === "inbox"
                         ? item?.from_user_name[0].toUpperCase()
-                        : item?.to_user_name[0].toUpperCase())
+                        : selectedItem === "sent"
+                        ? item?.to_user_name[0].toUpperCase()
+                        : item?.from_user_name[0].toUpperCase())
                     }
                   />
                 </ListItemDecorator>
@@ -69,16 +85,18 @@ export default function EmailList({
                       sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
                     >
                       <Typography level="body-xs">
-                        {selectedItem == "inbox"
-                          ? item.from_user_name
-                          : item.to_user_name}
+                        {                      (selectedItem === "inbox"
+                        ? item?.from_user_name
+                        : selectedItem === "sent"
+                        ? item?.to_user_name
+                        : item?.from_user_name)}
                       </Typography>
                       <Box
                         sx={{
                           width: "8px",
                           height: "8px",
                           borderRadius: "99px",
-                          bgcolor: item.category_id === 0 ? "" : item.color,
+                          bgcolor: item.category_id === 0 ? "" : selectedItem === "sent"? "": item.color,
                         }}
                       />
                     </Box>

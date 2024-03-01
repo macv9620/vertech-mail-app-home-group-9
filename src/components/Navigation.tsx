@@ -186,6 +186,11 @@ export default function Navigation({
     // clearSearch()
   };
 
+  const handleCategoryClick = (categoryId: number) => {
+    setSelectedItem(categoryId.toString());
+    // Do something with the selected categoryId
+  };
+
   return (
     <List size="sm" sx={{ "--ListItem-radius": "8px", "--List-gap": "4px" }}>
       <ListItem nested>
@@ -231,7 +236,7 @@ export default function Navigation({
           {categoriesInfo?.map((category) =>
             category.category_id === 0 ? null : (
               <ListItem key={category.category_id}>
-                <ListItemButton>
+                <ListItemButton onClick={() => handleCategoryClick(category.category_id)} selected={selectedItem === category.category_id.toString()}>
                   <ListItemDecorator>
                     <Box
                       sx={{

@@ -14,7 +14,7 @@ import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulletedRounded";
 import { useAuthContext } from "../context/AuthContextProvider";
-import { postMessage } from "../services/postMessage";
+import { postMessage } from "../services/messages/postMessage";
 // import Snackbar from "@mui/joy/Snackbar";
 
 export interface WriteEmailProps {
