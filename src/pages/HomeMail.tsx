@@ -12,7 +12,6 @@ import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import RestorePageTwoToneIcon from "@mui/icons-material/RestorePageTwoTone";
-// import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 
 import Layout from "../components/Layout";
 import Navigation from "../components/Navigation";
@@ -31,18 +30,12 @@ const HomeMail = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState<boolean>(false);
 
-  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(
-    null
-  );
-  const [categoriesInfo, setCategoriesInfo] = React.useState<
-    IUserCategoryInfo[] | null
-  >(null);
+  const [messagesInfo, setMessagesInfo] = React.useState<IMessageInfo[] | null>(null);
+  const [categoriesInfo, setCategoriesInfo] = React.useState<IUserCategoryInfo[] | null>(null);
 
-  const [selectedMessage, setSelectedMessage] =
-    React.useState<IMessageInfo | null>(null);
+  const [selectedMessage, setSelectedMessage] = React.useState<IMessageInfo | null>(null);
   const { userLogged, setUserLogged } = useAuthContext();
-  const [updateGetMessages, setUpdateGetMessages] =
-    React.useState<boolean>(false);
+  const [updateGetMessages, setUpdateGetMessages] = React.useState<boolean>(false);
   const [selectedItem, setSelectedItem] = React.useState<string>("inbox");
   const [userAuthEmail, setUserEmailstring] = React.useState<string>("null");
   const [searchTerm, setSearchTerm] = React.useState<string>("");
@@ -59,17 +52,6 @@ const HomeMail = () => {
   const closeSnackBar = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
-
-  // React.useEffect(() => {
-  //   if (!showLoading && selectedMessage !== null) {
-
-      
-  //     const updatedSelectedMessage = messagesInfo?.filter(messageInfo => messageInfo.message_id = selectedMessage.message_id)[0]
-  //     if(updatedSelectedMessage){
-  //       setSelectedMessage({ ...updatedSelectedMessage });
-  //     }
-  //   }
-  // }, [showLoading]);
 
   React.useEffect(() => {
     let userAuthEmail = "";
@@ -94,34 +76,41 @@ const HomeMail = () => {
       setShowLoading(true);
       getUserMessages(userAuthEmail)
         .then((res) => {
-
           const messages: IMessageInfo[] = res.data?.sort(
             (messageA: IMessageInfo, messageB: IMessageInfo) =>
               messageB.message_id - messageA.message_id
           );
           // Filter messages based on selected item
-          const filteredActiveMessages = messages.filter(message => !(message.to_user === userAuthEmail && !message.isActive))
+          const filteredActiveMessages = messages.filter(
+            (message) =>
+              !(message.to_user === userAuthEmail && !message.isActive)
+          );
           if (selectedItem === "inbox") {
             setMessagesInfo(
-              filteredActiveMessages?.filter((message) => message.to_user === userAuthEmail)
+              filteredActiveMessages?.filter(
+                (message) => message.to_user === userAuthEmail
+              )
             );
           } else if (selectedItem === "sent") {
             setMessagesInfo(
-              filteredActiveMessages?.filter((message) => message.from_user === userAuthEmail)
+              filteredActiveMessages?.filter(
+                (message) => message.from_user === userAuthEmail
+              )
             );
           } else {
             setMessagesInfo(filteredActiveMessages);
           }
           setShowLoading(false);
 
-
           if (selectedMessage) {
-            const updatedSelectedMessage = filteredActiveMessages?.filter(messageInfo => messageInfo.message_id == selectedMessage.message_id)[0]
-            if(updatedSelectedMessage){
+            const updatedSelectedMessage = filteredActiveMessages?.filter(
+              (messageInfo) =>
+                messageInfo.message_id == selectedMessage.message_id
+            )[0];
+            if (updatedSelectedMessage) {
               setSelectedMessage({ ...updatedSelectedMessage });
             }
           }
-
         })
         .catch(() => {
           setShowLoading(false);
@@ -130,19 +119,15 @@ const HomeMail = () => {
 
     //Get user categories
     const fetchUserCategories = () => {
-      getUserCategories(userAuthEmail)
-      .then(res => {
-        const categories = res.data
+      getUserCategories(userAuthEmail).then((res) => {
+        const categories = res.data;
         categories.unshift({
           category_id: 0,
           category_name: "No category",
-          color: ""
-      })
-        setCategoriesInfo(categories)
-      })
-
-
-      
+          color: "",
+        });
+        setCategoriesInfo(categories);
+      });
     };
 
     fetchMessages();
@@ -258,7 +243,7 @@ const HomeMail = () => {
                 p: 2,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               <Box sx={{ alignItems: "center", gap: 1 }}>
@@ -314,16 +299,16 @@ const HomeMail = () => {
             />
           </Layout.SidePane>
           <Layout.Main>
-            <EmailContent 
-            selectedMessage={selectedMessage}
-            setSelectedMessage={setSelectedMessage} 
-            categoriesInfo={categoriesInfo} 
-            selectedItem={selectedItem} 
-            setUpdateGetMessages={setUpdateGetMessages}
-            updateGetMessages={updateGetMessages}
-            showLoading={showLoading}
-            setShowLoading={setShowLoading}
-            setOpenSnackbar={setOpenSnackbar}
+            <EmailContent
+              selectedMessage={selectedMessage}
+              setSelectedMessage={setSelectedMessage}
+              categoriesInfo={categoriesInfo}
+              selectedItem={selectedItem}
+              setUpdateGetMessages={setUpdateGetMessages}
+              updateGetMessages={updateGetMessages}
+              showLoading={showLoading}
+              setShowLoading={setShowLoading}
+              setOpenSnackbar={setOpenSnackbar}
             />
           </Layout.Main>
         </Layout.Root>
