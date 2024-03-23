@@ -16,7 +16,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { postLogin } from "../services/login/postLogin";
 import Snackbar from "@mui/joy/Snackbar";
 
-// Interface for form elements
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
   password: HTMLInputElement;
@@ -25,7 +24,6 @@ interface SignInFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
-// Component for toggling color scheme
 function ColorSchemeToggle(props: IconButtonProps) {
   const { onClick, ...other } = props;
   const { mode, setMode } = useColorScheme();
@@ -67,7 +65,6 @@ export default function Login() {
     open: false,
   });
 
-  // Function to handle opening Snackbar with success or error message
   const handleSnackbarOpen = (message: string, success: boolean) => {
     setOpenSnackbar({
       open: true,
@@ -76,13 +73,11 @@ export default function Login() {
     });
   };
 
-  // Function to close Snackbar
   const closeSnackBar = () => {
     setOpenSnackbar({ ...openSnackbar, open: false });
   };
 
-  // Function to handle form submission
-  const hadleSubmit = (event: React.FormEvent<SignInFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
 
     const formElements = event.currentTarget.elements;
@@ -97,7 +92,8 @@ export default function Login() {
     postLogin(data)
       .then((res) => {
         handleSnackbarOpen(res.data.message, true);
-        sessionStorage.setItem('authenticatedUser', JSON.stringify(res.data.data))
+        sessionStorage.setItem('authenticatedUser', JSON.stringify({email:res.data.data.email, name:res.data.data.name}))
+        sessionStorage.setItem('accessToken', JSON.stringify(res.data.data.access))
         navigation("/home");
       })
       .catch((e) => {
@@ -115,6 +111,7 @@ export default function Login() {
         }
       });
   };
+
 
   return (
     <>
@@ -210,7 +207,7 @@ export default function Login() {
 
               <Stack gap={4} sx={{ mt: 2 }}>
                 <form
-                  onSubmit={hadleSubmit}
+                  onSubmit={handleSubmit}
                 >
                   {/* Login form */}
                   <FormControl required>

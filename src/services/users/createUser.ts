@@ -5,7 +5,7 @@ const ENDPOINT = '/users/create'
 
 const postUser = (userInfo: IPostUserData) => {
   const data = JSON.stringify(userInfo)
-
+  console.log (BASE_URL)
   const config = {
     method: 'post',
     maxBodyLength: Infinity,

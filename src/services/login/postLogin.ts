@@ -20,3 +20,4 @@ const postLogin = (userInfo: IPostUserData) => {
 }
 
 export { postLogin }
+
