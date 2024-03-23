@@ -48,7 +48,7 @@ interface IUserCategoryInfo {
 }
 
 interface IUserPostCategory {
-  email: string,
+  email?: string,
   category_name: string,
   color: string
 }
