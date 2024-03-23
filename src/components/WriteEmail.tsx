@@ -79,7 +79,6 @@ const WriteEmail = React.forwardRef<HTMLDivElement, WriteEmailProps>(
     const hadleSubmit: React.MouseEventHandler<HTMLAnchorElement> = () => {
       setShowLoading(true)
       const data: IPostMessageData = {
-        from_user: userLogged.email,
         to_user: toUser,
         subject,
         body,

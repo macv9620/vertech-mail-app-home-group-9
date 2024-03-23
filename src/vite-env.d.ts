@@ -38,7 +38,6 @@ interface IPostMessageData {
   subject: string,
   body: string,
   to_user: string,
-  from_user: string
   category_id: number
 }
 
@@ -49,7 +48,7 @@ interface IUserCategoryInfo {
 }
 
 interface IUserPostCategory {
-  email: string,
+  email?: string,
   category_name: string,
   color: string
 }

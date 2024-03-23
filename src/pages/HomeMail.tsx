@@ -94,7 +94,7 @@ const HomeMail = () => {
     // Fetch user messages
     const fetchMessages = () => {
       setShowLoading(true);
-      getUserMessages(userAuthEmail)
+      getUserMessages()
         .then((res) => {
           const messages: IMessageInfo[] = res.data?.sort(
             (messageA: IMessageInfo, messageB: IMessageInfo) =>
@@ -139,7 +139,7 @@ const HomeMail = () => {
 
     // Fetch user categories
     const fetchUserCategories = () => {
-      getUserCategories(userAuthEmail).then((res) => {
+      getUserCategories().then((res) => {
         const categories = res.data;
         categories.unshift({
           category_id: 0,

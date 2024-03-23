@@ -157,8 +157,7 @@ export default function Navigation({
     // Create an object with the input value
     const categoryObject = {
       category_name: toTitleCase(newCategoryName),
-      color: colors[Math.floor(Math.random() * 11)], // Randomly select a color from the array
-      email: userLogged.email, // Assign the user's email to the category
+      color: colors[Math.floor(Math.random() * 11)], // Randomly select a color from the array      
     };
 
     console.log(categoryObject)
